@@ -1,0 +1,5 @@
+Gunakan Alembic untuk mengelola perubahan skema database.
+
+Contoh perintah setelah dependency Alembic terpasang:
+- `alembic revision --autogenerate -m "init schema"`
+- `alembic upgrade head`

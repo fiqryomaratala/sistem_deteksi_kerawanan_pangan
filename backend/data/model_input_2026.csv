@@ -1,0 +1,13 @@
+tahun,bulan,catatan,beras_tersedia,beras_kebutuhan,minyak_tersedia,minyak_kebutuhan,telur_tersedia,telur_kebutuhan
+2026,1,Import dataset 2026 bulan Januari,325311,21674,4341,1494,32304,2435
+2026,2,Import dataset 2026 bulan Februari,277228,19618,4236,1383,33279,2364
+2026,3,Import dataset 2026 bulan Maret,334144,22653,2852,1586,30916,2761
+2026,4,Import dataset 2026 bulan April,311491,20975,1266,1446,28154,2356
+2026,5,Import dataset 2026 bulan Mei,290516,21691,-180,1495,25798,2439
+2026,6,Import dataset 2026 bulan Juni,268825,20975,-1675,1446,23359,2356
+2026,7,Import dataset 2026 bulan Juli,247850,21674,-3122,1494,21003,2435
+2026,8,Import dataset 2026 bulan Agustus,226176,21674,-4616,1494,18568,2435
+2026,9,Import dataset 2026 bulan September,204502,20975,-6111,1446,16134,2356
+2026,10,Import dataset 2026 bulan Oktober,183528,21674,-7557,1494,13778,2435
+2026,11,Import dataset 2026 bulan November,161854,20975,-9051,1446,11343,2356
+2026,12,Import dataset 2026 bulan Desember,140879,21695,-10498,1499,8987,2461
