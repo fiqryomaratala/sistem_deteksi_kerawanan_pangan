@@ -1,7 +1,12 @@
 const ADMIN_SESSION_EVENT = "admin-session-change";
+const ADMIN_WELCOME_TOAST_EVENT = "admin-welcome-toast";
 
 export function getAdminAccessToken() {
   return window.localStorage.getItem("admin_access_token");
+}
+
+export function getAdminProfile() {
+  return window.localStorage.getItem("admin_profile");
 }
 
 export function getAdminSessionExpiresAt() {
@@ -40,6 +45,21 @@ export function clearAdminSession() {
   window.localStorage.removeItem("admin_profile");
   window.localStorage.removeItem("admin_expires_at");
   window.dispatchEvent(new Event(ADMIN_SESSION_EVENT));
+}
+
+export function queueAdminWelcomeToast(message: string) {
+  window.sessionStorage.setItem(ADMIN_WELCOME_TOAST_EVENT, message);
+}
+
+export function consumeAdminWelcomeToast() {
+  const message = window.sessionStorage.getItem(ADMIN_WELCOME_TOAST_EVENT);
+
+  if (!message) {
+    return null;
+  }
+
+  window.sessionStorage.removeItem(ADMIN_WELCOME_TOAST_EVENT);
+  return message;
 }
 
 export function subscribeAdminSession(callback: () => void) {

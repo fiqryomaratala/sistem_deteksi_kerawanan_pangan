@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ReactNode } from "react";
 import { AdminAuthGuard } from "./admin-auth-guard";
+import { AdminWelcomeToast } from "./admin-welcome-toast";
 import { LogoutButton } from "./logout-button";
 
 type AdminShellProps = {
@@ -45,6 +46,7 @@ export function AdminShell({
   return (
     <main className="min-h-screen bg-[#f6f9fe] text-slate-900">
       <AdminAuthGuard />
+      <AdminWelcomeToast />
       <div className="grid min-h-screen lg:grid-cols-[250px_minmax(0,1fr)]">
         <aside className="border-r border-slate-200 bg-white lg:sticky lg:top-0 lg:h-screen lg:self-start lg:overflow-y-auto">
           <div className="border-b border-slate-200 px-6 py-5">

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-import { saveAdminSession } from "../admin-session";
+import { queueAdminWelcomeToast, saveAdminSession } from "../admin-session";
 
 type FormState = {
   username: string;
@@ -126,6 +126,9 @@ export function LoginForm() {
         profile: JSON.stringify(result.admin),
         expiresAt: result.expires_at,
       });
+      queueAdminWelcomeToast(
+        `${result.admin.username} berhasil masuk ke dashboard admin.`,
+      );
 
       router.push("/admin");
       router.refresh();
