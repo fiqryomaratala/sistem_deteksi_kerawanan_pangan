@@ -4,6 +4,7 @@ type PredictionLabel = "Aman" | "Waspada" | "Rawan";
 
 type PredictionHistoryItem = {
   id: number;
+  food_data_id: number;
   bulan: number | null;
   tahun: number | null;
   catatan: string | null;
@@ -12,6 +13,12 @@ type PredictionHistoryItem = {
   beras_ratio: number;
   minyak_ratio: number;
   telur_ratio: number;
+  beras_tersedia: number;
+  beras_kebutuhan: number;
+  minyak_tersedia: number;
+  minyak_kebutuhan: number;
+  telur_tersedia: number;
+  telur_kebutuhan: number;
 };
 
 type DashboardSummaryResponse = {
@@ -53,6 +60,7 @@ type DashboardData = {
   summary: DashboardSummaryResponse;
   distribution: DashboardDistributionResponse;
   trend: DashboardMonthlyTrendResponse;
+  history: PredictionHistoryItem[];
   error: string | null;
 };
 
@@ -109,16 +117,18 @@ async function getJson<T>(path: string): Promise<T> {
 
 async function getDashboardData(): Promise<DashboardData> {
   try {
-    const [summary, distribution, trend] = await Promise.all([
+    const [summary, distribution, trend, historyResponse] = await Promise.all([
       getJson<DashboardSummaryResponse>("/dashboard/summary"),
       getJson<DashboardDistributionResponse>("/dashboard/distribution"),
       getJson<DashboardMonthlyTrendResponse>("/dashboard/trend/monthly"),
+      getJson<{ items: PredictionHistoryItem[] }>("/predictions?limit=12&offset=0"),
     ]);
 
     return {
       summary,
       distribution,
       trend,
+      history: historyResponse.items,
       error: null,
     };
   } catch (error) {
@@ -146,6 +156,7 @@ async function getDashboardData(): Promise<DashboardData> {
           rawan: 0,
         })),
       },
+      history: [],
       error:
         error instanceof Error
           ? error.message
@@ -156,6 +167,13 @@ async function getDashboardData(): Promise<DashboardData> {
 
 function formatNumber(value: number) {
   return new Intl.NumberFormat("id-ID").format(value);
+}
+
+function formatDecimal(value: number, digits = 2) {
+  return new Intl.NumberFormat("id-ID", {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  }).format(value);
 }
 
 function formatPercentage(value: number) {
@@ -174,36 +192,6 @@ function formatMonthYear(
   }
 
   return `${MONTH_LABELS[month - 1]} ${year}`;
-}
-
-function getDominantStatus(item: MonthlyTrendItem): PredictionLabel | null {
-  if (item.total === 0) {
-    return null;
-  }
-
-  const entries: Array<[PredictionLabel, number]> = [
-    ["Aman", item.aman],
-    ["Waspada", item.waspada],
-    ["Rawan", item.rawan],
-  ];
-
-  return entries.sort((a, b) => b[1] - a[1])[0][0];
-}
-
-function describeMonth(item: MonthlyTrendItem) {
-  if (item.total === 0) {
-    return "Belum ada data deteksi pada bulan ini.";
-  }
-
-  const dominantStatus = getDominantStatus(item);
-  const dominantCount =
-    dominantStatus === "Aman"
-      ? item.aman
-      : dominantStatus === "Waspada"
-        ? item.waspada
-        : item.rawan;
-
-  return `Mayoritas ${dominantStatus?.toLowerCase()} dengan ${dominantCount} dari ${item.total} deteksi. Aman ${item.aman}, Waspada ${item.waspada}, Rawan ${item.rawan}.`;
 }
 
 function buildPieGradient(items: DistributionItem[]) {
@@ -234,22 +222,81 @@ function getPeakMonth(items: MonthlyTrendItem[]) {
   return [...items].sort((a, b) => b.total - a.total)[0];
 }
 
+function TotalPredictiionCard () {
+  return (
+    <svg  
+    xmlns="http://www.w3.org/2000/svg" 
+    width="24" height="24"
+    viewBox="0 0 24 24"  
+    fill="#3a3838" 
+  >
+    <path d="M21 7h-5V3c0-.55-.45-1-1-1H9c-.55 0-1 .45-1 1v8H3c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h18c.55 0 1-.45 1-1V8c0-.55-.45-1-1-1M4 13h4v7H4zm6-1V4h4v16h-4zm10 8h-4V9h4z">
+    </path>
+  </svg>
+  );
+}
+
+function SafeStatusIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="#69ff39"
+    >
+      <path d="m20.42 6.11-7.97-4c-.28-.14-.62-.14-.9 0l-7.97 4c-.31.15-.51.45-.55.79-.01.11-.96 10.76 8.55 15.01a.98.98 0 0 0 .82 0C21.91 17.66 20.97 7 20.95 6.9a.98.98 0 0 0-.55-.79ZM12 19.9C5.26 16.63 4.94 9.64 5 7.64l7-3.51 7 3.51c.04 1.99-.33 9.02-7 12.26" />
+      <path d="m11 12.59-1.29-1.3-1.42 1.42 2.71 2.7 4.71-4.7-1.42-1.42z" />
+    </svg>
+  );
+}
+
+function WaspadaIcon() {
+  return (
+    <svg  
+    xmlns="http://www.w3.org/2000/svg" 
+    width="24" height="24"  
+    viewBox="0 0 24 24" 
+    fill="#f6a700"
+  >
+    <path d="M11 9h2v6h-2zm0 8h2v2h-2z"></path>
+    <path d="M12.87 2.51c-.35-.63-1.4-.63-1.75 0l-9.99 18c-.17.31-.17.69.01.99.18.31.51.49.86.49h20c.35 0 .68-.19.86-.49a1 1 0 0 0 .01-.99zM3.7 20 12 5.06 20.3 20z"></path>
+</svg>
+  );
+}
+
+function RawanIcon() {
+  return (
+    <svg  
+    xmlns="http://www.w3.org/2000/svg" 
+    width="24" height="24"  
+    viewBox="0 0 24 24" 
+    fill="#ff0000"
+  > 
+    <path d="M7 19H4v2h16v-2h-3v-6c0-2.76-2.24-5-5-5s-5 2.24-5 5zm2-6c0-1.65 1.35-3 3-3s3 1.35 3 3v6H9zm4-7V3h-2v3zm6 5v2h3v-2zM5 13v-2H2v2zm12.66-5.24 1.06-1.06 1.06-1.06-.71-.71-.71-.71-1.06 1.06-1.06 1.06.71.71zm-11.32 0 .71-.71.71-.71L6.7 5.28 5.64 4.22l-.71.71-.71.71L5.28 6.7z">
+    </path>
+    </svg>
+  );
+}
+
 function StatCard({
   title,
   value,
   helper,
-  accent,
+  icon,
 }: {
   title: string;
   value: string;
   helper: string;
-  accent: string;
+  icon?: React.ReactNode;
 }) {
   return (
     <article className="rounded-[10px] border border-white/70 bg-white/90 p-5 shadow-[0_20px_45px_rgba(18,38,63,0.08)] backdrop-blur">
       <div className="mb-4 flex items-center justify-between">
         <p className="text-sm font-medium text-slate-500">{title}</p>
-        <span className={`h-3 w-3 rounded-full ${accent}`} />
+        <div className={`grid h-10 w-10 place-items-center rounded-[4px]`}>
+          {icon ? <span className="text-xl font-semibold">{icon}</span> : null}
+        </div>
       </div>
       <p className="font-[family:var(--font-space-grotesk)] text-3xl font-semibold text-slate-950">
         {value}
@@ -260,9 +307,8 @@ function StatCard({
 }
 
 export default async function Home() {
-  const { summary, distribution, trend, error } = await getDashboardData();
+  const { summary, distribution, trend, history, error } = await getDashboardData();
   const maxTotal = Math.max(...trend.items.map((item) => item.total), 1);
-  const highlightedMonths = trend.items.filter((item) => item.total > 0);
   const peakMonth = getPeakMonth(trend.items);
   const pieGradient = buildPieGradient(distribution.items);
   const latestStatus = summary.latest_prediction?.hasil_prediksi;
@@ -315,25 +361,25 @@ export default async function Home() {
               title="Total data deteksi"
               value={formatNumber(summary.total_data)}
               helper="Jumlah seluruh data prediksi yang sudah tersimpan."
-              accent="bg-blue-600"
+              icon={<TotalPredictiionCard />}
             />
             <StatCard
               title="Deteksi aman"
               value={formatNumber(summary.counts.aman)}
               helper="Data dengan kondisi pasokan relatif aman."
-              accent="bg-emerald-500"
+              icon={<SafeStatusIcon />}
             />
             <StatCard
               title="Deteksi waspada"
               value={formatNumber(summary.counts.waspada)}
               helper="Data yang perlu perhatian sebelum masuk fase rawan."
-              accent="bg-amber-400"
+              icon={<WaspadaIcon />}
             />
             <StatCard
               title="Deteksi rawan"
               value={formatNumber(summary.counts.rawan)}
               helper="Data yang menunjukkan indikasi kerawanan tertinggi."
-              accent="bg-rose-500"
+              icon={<RawanIcon />}
             />
           </section>
 
@@ -416,43 +462,79 @@ export default async function Home() {
                     Penjelasan hasil deteksi bulanan
                   </h3>
                   <p className="text-sm text-slate-500">
-                    {highlightedMonths.length} bulan memiliki data
+                    {history.length} data terbaru ditampilkan
                   </p>
                 </div>
 
-                <div className="mt-4 grid gap-3">
-                  {highlightedMonths.length > 0 ? (
-                    highlightedMonths.map((item) => {
-                      const dominantStatus = getDominantStatus(item);
-                      const statusStyle = dominantStatus
-                        ? STATUS_STYLES[dominantStatus]
-                        : null;
+                <div className="mt-4 overflow-hidden rounded-[10px] border border-slate-200/80 bg-white">
+                  {history.length > 0 ? (
+                    <>
+                      <div className="hidden grid-cols-[1.2fr_0.7fr_0.9fr_1.1fr] gap-6 border-b border-slate-200/80 bg-slate-50/90 px-5 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 md:grid">
+                        <p>Periode</p>
+                        <p>Status</p>
+                        <p>Rasio</p>
+                        <p>Input Komoditas</p>
+                      </div>
 
-                      return (
-                        <div
-                          key={`detail-${item.bulan}`}
-                          className="flex flex-col gap-3 rounded-[10px] border border-slate-200/80 bg-slate-50/80 p-4 sm:flex-row sm:items-center sm:justify-between"
-                        >
-                          <div>
-                            <p className="font-[family:var(--font-space-grotesk)] text-lg font-semibold text-slate-900">
-                              {MONTH_LABELS[item.bulan - 1]}
-                            </p>
-                            <p className="mt-1 text-sm leading-6 text-slate-500">
-                              {describeMonth(item)}
-                            </p>
-                          </div>
-                          {statusStyle ? (
-                            <span
-                              className={`inline-flex w-fit rounded-full px-3 py-2 text-sm font-semibold ${statusStyle.soft} ${statusStyle.text}`}
+                      <div className="divide-y divide-slate-200/80">
+                        {history.map((item) => {
+                          const statusStyle = STATUS_STYLES[item.hasil_prediksi];
+
+                          return (
+                            <div
+                              key={`history-${item.id}`}
+                              className="grid gap-4 px-5 py-5 md:grid-cols-[1.2fr_0.7fr_0.9fr_1.1fr] md:gap-6"
                             >
-                              Dominan {dominantStatus}
-                            </span>
-                          ) : null}
-                        </div>
-                      );
-                    })
+                              <div>
+                                <p className="font-[family:var(--font-space-grotesk)] text-xl font-semibold text-slate-900">
+                                  {formatMonthYear(item.bulan, item.tahun)}
+                                </p>
+                                <p className="mt-1 text-sm text-slate-400">
+                                  Prediksi #{item.id} · Food #{item.food_data_id}
+                                </p>
+                              </div>
+
+                              <div className="md:pt-1">
+                                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400 md:hidden">
+                                  Status
+                                </p>
+                                <span
+                                  className={`inline-flex rounded-full px-4 py-2 text-sm font-semibold ${statusStyle.soft} ${statusStyle.text}`}
+                                >
+                                  {item.hasil_prediksi}
+                                </span>
+                              </div>
+
+                              <div className="text-slate-700 md:pt-1">
+                                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400 md:hidden">
+                                  Rasio
+                                </p>
+                                <p>Beras: {formatDecimal(item.beras_ratio)}</p>
+                                <p>Minyak: {formatDecimal(item.minyak_ratio)}</p>
+                                <p>Telur: {formatDecimal(item.telur_ratio)}</p>
+                              </div>
+
+                              <div className="text-slate-700 md:pt-1">
+                                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400 md:hidden">
+                                  Input Komoditas
+                                </p>
+                                <p>
+                                  Beras {formatNumber(item.beras_tersedia)} / {formatNumber(item.beras_kebutuhan)}
+                                </p>
+                                <p>
+                                  Minyak {formatNumber(item.minyak_tersedia)} / {formatNumber(item.minyak_kebutuhan)}
+                                </p>
+                                <p>
+                                  Telur {formatNumber(item.telur_tersedia)} / {formatNumber(item.telur_kebutuhan)}
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
                   ) : (
-                    <div className="rounded-[22px] border border-dashed border-slate-300 bg-slate-50 px-4 py-5 text-sm text-slate-500">
+                    <div className="px-4 py-5 text-sm text-slate-500">
                       Belum ada data prediksi per bulan yang bisa dijelaskan.
                     </div>
                   )}

@@ -5,7 +5,7 @@ import { AdminWelcomeToast } from "./admin-welcome-toast";
 import { LogoutButton } from "./logout-button";
 
 type AdminShellProps = {
-  activeItem: "overview" | "ml";
+  activeItem: "overview" | "ml" | "history";
   title: string;
   description: string;
   headerActions?: ReactNode;
@@ -68,10 +68,11 @@ export function AdminShell({
             <nav className="mt-4 space-y-1">
               <NavItem href="/admin" label="Overview" active={activeItem === "overview"} />
               <NavItem href="/admin/ml" label="ML Prediction" active={activeItem === "ml"} />
-              <div className="flex items-center gap-3 rounded-[4px] px-4 py-3 text-sm text-slate-600">
-                <span className="h-2 w-2 rounded-full bg-slate-300" />
-                Histori Prediksi
-              </div>
+              <NavItem
+                href="/admin/history"
+                label="Riwayat Prediksi"
+                active={activeItem === "history"}
+              />
               <div className="flex items-center gap-3 rounded-[4px] px-4 py-3 text-sm text-slate-600">
                 <span className="h-2 w-2 rounded-full bg-slate-300" />
                 Monitoring Bulanan
