@@ -135,9 +135,9 @@ export function LogoutButton() {
         type="button"
         onClick={openModal}
         disabled={isLoggingOut}
-        className="inline-flex items-center justify-center rounded-[4px] border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm font-semibold text-rose-700 transition duration-200 hover:-translate-y-0.5 hover:bg-rose-100 hover:shadow-[0_12px_28px_rgba(244,63,94,0.12)] disabled:cursor-not-allowed disabled:opacity-70"
+        className="inline-flex items-center justify-center rounded-sm border border-rose-200 bg-rose-50 px-4 py-2.5 text-[13px] font-semibold text-rose-700 transition duration-200 hover:-translate-y-0.5 hover:bg-rose-100 hover:shadow-[0_12px_28px_rgba(244,63,94,0.12)] disabled:cursor-not-allowed disabled:opacity-70"
       >
-        {isLoggingOut ? "Logging Out..." : "Logout"}
+        {isLoggingOut ? "Sedang keluar..." : "Keluar"}
       </button>
 
       {isModalMounted ? (
@@ -178,7 +178,7 @@ export function LogoutButton() {
 
               <div className="min-w-0">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rose-500">
-                  Konfirmasi Logout
+                  Konfirmasi Keluar
                 </p>
                 <h2
                   id="logout-confirmation-title"
@@ -188,7 +188,7 @@ export function LogoutButton() {
                 </h2>
                 <p className="mt-3 text-sm leading-7 text-slate-500">
                   Sesi admin akan diakhiri di browser ini. Setelah logout, Anda perlu
-                  login kembali untuk mengakses fitur admin dan workflow machine
+                  login kembali untuk mengakses fitur admin dan alur kerja machine
                   learning.
                 </p>
               </div>
@@ -215,7 +215,7 @@ export function LogoutButton() {
                     <span>Memproses...</span>
                   </>
                 ) : (
-                  <span>Ya, Logout</span>
+                  <span>Ya, keluar</span>
                 )}
               </button>
             </div>
@@ -237,7 +237,7 @@ export function LogoutButton() {
                 <CheckIcon />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-slate-900">Logout berhasil</p>
+                <p className="text-sm font-semibold text-slate-900">Berhasil keluar</p>
                 <p className="mt-1 text-sm leading-6 text-slate-500">
                   Sesi admin sedang ditutup dan Anda akan diarahkan ke halaman login.
                 </p>

@@ -245,10 +245,10 @@ export default async function AdminHistoryPage({
       description="Telaah seluruh hasil prediksi yang sudah tersimpan, lengkap dengan filter periode dan status."
       headerActions={
         <>
-          <div className="rounded-[4px] border border-slate-200 bg-[#f8f9fc] px-4 py-3 text-sm text-slate-600">
+          <div className="rounded-sm border border-slate-200 bg-[#f8f9fc] px-4 py-3 text-sm text-slate-600">
             Total data: <span className="font-semibold text-slate-900">{data.total}</span>
           </div>
-          <div className="rounded-[4px] border border-slate-200 bg-[#f8f9fc] px-4 py-3 text-sm text-slate-600">
+          <div className="rounded-sm border border-slate-200 bg-[#f8f9fc] px-4 py-3 text-sm text-slate-600">
             Tampil:{" "}
             <span className="font-semibold text-slate-900">
               {startItem}-{endItem}
@@ -279,7 +279,7 @@ export default async function AdminHistoryPage({
               <select
                 name="status"
                 defaultValue={status ?? ""}
-                className="w-full rounded-[4px] border border-slate-200 bg-white px-3 py-2.5 outline-none transition focus:border-[#6777ef]"
+                className="w-full rounded-sm border border-slate-200 bg-white px-3 py-2.5 outline-none transition focus:border-[#6777ef]"
               >
                 <option value="">Semua status</option>
                 <option value="Aman">Aman</option>
@@ -293,7 +293,7 @@ export default async function AdminHistoryPage({
               <select
                 name="bulan"
                 defaultValue={bulan ? String(bulan) : ""}
-                className="w-full rounded-[4px] border border-slate-200 bg-white px-3 py-2.5 outline-none transition focus:border-[#6777ef]"
+                className="w-full rounded-sm border border-slate-200 bg-white px-3 py-2.5 outline-none transition focus:border-[#6777ef]"
               >
                 <option value="">Semua bulan</option>
                 {MONTH_LABELS.map((label, index) => (
@@ -312,20 +312,20 @@ export default async function AdminHistoryPage({
                 min={1900}
                 defaultValue={tahun ?? ""}
                 placeholder="Contoh 2026"
-                className="w-full rounded-[4px] border border-slate-200 px-3 py-2.5 outline-none transition focus:border-[#6777ef]"
+                className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none transition focus:border-[#6777ef]"
               />
             </label>
 
             <div className="flex gap-3">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-[4px] bg-[#6777ef] px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-105"
+                className="inline-flex items-center justify-center rounded-sm bg-[#6777ef] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:brightness-105"
               >
                 Terapkan
               </button>
               <Link
                 href="/admin/history"
-                className="inline-flex items-center justify-center rounded-[4px] border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+                className="inline-flex items-center justify-center rounded-sm border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
               >
                 Reset
               </Link>
@@ -450,7 +450,7 @@ export default async function AdminHistoryPage({
                 tahun,
               })}
               aria-disabled={currentPage <= 1}
-              className={`inline-flex items-center justify-center rounded-[4px] px-4 py-2 text-sm font-semibold transition ${
+              className={`inline-flex items-center justify-center rounded-sm px-4 py-2 text-sm font-semibold transition ${
                 currentPage <= 1
                   ? "pointer-events-none border border-slate-200 bg-slate-100 text-slate-400"
                   : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
@@ -458,7 +458,7 @@ export default async function AdminHistoryPage({
             >
               Sebelumnya
             </Link>
-            <div className="rounded-[4px] border border-slate-200 bg-[#f8f9fc] px-4 py-2 text-sm text-slate-600">
+            <div className="rounded-sm border border-slate-200 bg-[#f8f9fc] px-4 py-2 text-sm text-slate-600">
               Halaman <span className="font-semibold text-slate-900">{currentPage}</span> / {totalPages}
             </div>
             <Link
@@ -469,7 +469,7 @@ export default async function AdminHistoryPage({
                 tahun,
               })}
               aria-disabled={currentPage >= totalPages}
-              className={`inline-flex items-center justify-center rounded-[4px] px-4 py-2 text-sm font-semibold transition ${
+              className={`inline-flex items-center justify-center rounded-sm px-4 py-2 text-sm font-semibold transition ${
                 currentPage >= totalPages
                   ? "pointer-events-none border border-slate-200 bg-slate-100 text-slate-400"
                   : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"

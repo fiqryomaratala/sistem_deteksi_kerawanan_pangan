@@ -16,6 +16,7 @@ type LoginResponse = {
   admin: {
     username: string;
     role: string;
+    photo_url?: string | null;
   };
 };
 
@@ -149,7 +150,7 @@ export function LoginForm() {
             name="username"
             type="text"
             autoComplete="username"
-            placeholder="Enter your username"
+            placeholder="Masukkan username"
             value={form.username}
             onChange={(event) =>
               setForm((current) => ({ ...current, username: event.target.value }))
@@ -165,7 +166,7 @@ export function LoginForm() {
             name="password"
             type={showPassword ? "text" : "password"}
             autoComplete="current-password"
-            placeholder="Enter your password"
+            placeholder="Masukkan password"
             value={form.password}
             onChange={(event) =>
               setForm((current) => ({ ...current, password: event.target.value }))
@@ -195,7 +196,7 @@ export function LoginForm() {
         disabled={isSubmitting}
         className="inline-flex w-full items-center justify-center rounded-[14px] bg-[linear-gradient(180deg,#3b82f6,#2563eb)] px-4 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(37,99,235,0.22)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
       >
-        {isSubmitting ? "Signing In..." : "Sign In"}
+        {isSubmitting ? "Sedang Masuk..." : "Masuk"}
       </button>
     </form>
   );

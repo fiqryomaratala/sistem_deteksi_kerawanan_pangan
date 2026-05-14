@@ -54,7 +54,7 @@ export default async function AdminLoginPage({
 
             <div className="text-center">
               <h1 className="font-[family:var(--font-space-grotesk)] text-3xl font-semibold text-slate-900">
-                Welcome Back
+                Selamat Datang Kembali
               </h1>
               <p className="mt-3 text-sm leading-6 text-slate-400">
                 Masukkan kredensial admin untuk mengakses dashboard internal.

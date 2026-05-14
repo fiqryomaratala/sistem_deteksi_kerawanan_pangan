@@ -260,7 +260,7 @@ export function AdminMlPanel() {
     <section className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
       <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
         <div className="border-b border-slate-200 px-6 py-4">
-          <h2 className="text-lg font-semibold text-slate-900">ML Prediction Panel</h2>
+          <h2 className="text-lg font-semibold text-slate-900">Panel Prediksi ML</h2>
           <p className="mt-1 text-sm text-slate-500">
             Admin dapat menjalankan prediksi manual langsung dari dashboard.
           </p>
@@ -289,7 +289,7 @@ export function AdminMlPanel() {
                       bulan: event.target.value,
                     }))
                   }
-                  className="w-full rounded-[4px] border border-slate-200 px-3 py-2.5 outline-none ring-0 transition focus:border-[#6777ef]"
+                  className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none ring-0 transition focus:border-[#6777ef]"
                 />
               </label>
               <label className="space-y-2 text-sm text-slate-600">
@@ -304,7 +304,7 @@ export function AdminMlPanel() {
                       tahun: event.target.value,
                     }))
                   }
-                  className="w-full rounded-[4px] border border-slate-200 px-3 py-2.5 outline-none ring-0 transition focus:border-[#6777ef]"
+                  className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none ring-0 transition focus:border-[#6777ef]"
                 />
               </label>
             </div>
@@ -333,7 +333,7 @@ export function AdminMlPanel() {
                         [field]: event.target.value,
                       }))
                     }
-                    className="w-full rounded-[4px] border border-slate-200 px-3 py-2.5 outline-none ring-0 transition focus:border-[#6777ef]"
+                    className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none ring-0 transition focus:border-[#6777ef]"
                   />
                 </label>
               ))}
@@ -350,7 +350,7 @@ export function AdminMlPanel() {
                     catatan: event.target.value,
                   }))
                 }
-                className="w-full rounded-[4px] border border-slate-200 px-3 py-2.5 outline-none ring-0 transition focus:border-[#6777ef]"
+                className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none ring-0 transition focus:border-[#6777ef]"
                 placeholder="Opsional, misalnya ringkasan kondisi lapangan bulan ini."
               />
             </label>
@@ -393,7 +393,7 @@ export function AdminMlPanel() {
             <button
               type="submit"
               disabled={predictionSubmitting || !token}
-              className="inline-flex items-center justify-center rounded-[4px] bg-[#6777ef] px-4 py-3 text-sm font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex items-center justify-center rounded-sm bg-[#6777ef] px-4 py-3 text-[13px] font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {predictionSubmitting ? "Memproses prediksi..." : "Jalankan Prediksi"}
             </button>
@@ -403,9 +403,9 @@ export function AdminMlPanel() {
 
       <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
         <div className="border-b border-slate-200 px-6 py-4">
-          <h2 className="text-lg font-semibold text-slate-900">Dataset Monthly Import</h2>
+          <h2 className="text-lg font-semibold text-slate-900">Impor Dataset Bulanan</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Upload CSV bulanan untuk menambah banyak data prediksi sekaligus.
+            Unggah CSV bulanan untuk menambah banyak data prediksi sekaligus.
           </p>
         </div>
 
@@ -425,7 +425,7 @@ export function AdminMlPanel() {
                 type="file"
                 accept=".csv,text/csv"
                 onChange={(event) => setCsvFile(event.target.files?.[0] ?? null)}
-                className="block w-full rounded-[4px] border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-600 file:mr-3 file:rounded-[4px] file:border-0 file:bg-[#eef1ff] file:px-3 file:py-2 file:text-sm file:font-medium file:text-[#6777ef]"
+                className="block w-full rounded-sm border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-600 file:mr-3 file:rounded-sm file:border-0 file:bg-[#eef1ff] file:px-3 file:py-2 file:text-sm file:font-medium file:text-[#6777ef]"
               />
             </label>
 
@@ -488,9 +488,9 @@ export function AdminMlPanel() {
             <button
               type="submit"
               disabled={importSubmitting || !token}
-              className="inline-flex items-center justify-center rounded-[4px] bg-[#6777ef] px-4 py-3 text-sm font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex items-center justify-center rounded-sm bg-[#6777ef] px-4 py-3 text-[13px] font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {importSubmitting ? "Mengimpor dataset..." : "Import Dataset CSV"}
+              {importSubmitting ? "Mengimpor dataset..." : "Impor Dataset CSV"}
             </button>
           </form>
         </div>

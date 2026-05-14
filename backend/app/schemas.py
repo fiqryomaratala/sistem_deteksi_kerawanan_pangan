@@ -109,6 +109,7 @@ class AdminLoginRequest(BaseModel):
 class AdminProfile(BaseModel):
     username: str
     role: str
+    photo_url: Optional[str] = None
 
 
 class AdminLoginResponse(BaseModel):
@@ -120,6 +121,16 @@ class AdminLoginResponse(BaseModel):
 
 class AdminSessionResponse(BaseModel):
     authenticated: bool
+    admin: AdminProfile
+
+
+class AdminPasswordResetRequest(BaseModel):
+    current_password: str = Field(..., min_length=1)
+    new_password: str = Field(..., min_length=8)
+
+
+class AdminMessageResponse(BaseModel):
+    message: str
     admin: AdminProfile
 
 

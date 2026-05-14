@@ -152,7 +152,7 @@ export function AdminAuthGuard() {
   if (!hasHydrated || isChecking) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/12 px-4 backdrop-blur-sm">
-        <div className="w-full max-w-sm rounded-[12px] border border-white/70 bg-white px-5 py-4 text-center shadow-[0_18px_50px_rgba(15,23,42,0.12)]">
+        <div className="w-full max-w-sm rounded-xl border border-white/70 bg-white px-5 py-4 text-center shadow-[0_18px_50px_rgba(15,23,42,0.12)]">
           <p className="text-sm font-semibold text-slate-900">Memvalidasi sesi admin</p>
           <p className="mt-2 text-sm leading-6 text-slate-500">
             Mohon tunggu, sistem sedang memastikan akses admin masih aktif.

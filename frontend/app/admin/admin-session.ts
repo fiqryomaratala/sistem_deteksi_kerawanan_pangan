@@ -1,12 +1,30 @@
 const ADMIN_SESSION_EVENT = "admin-session-change";
 const ADMIN_WELCOME_TOAST_EVENT = "admin-welcome-toast";
 
+export type AdminProfile = {
+  username: string;
+  role: string;
+  photo_url?: string | null;
+};
+
 export function getAdminAccessToken() {
   return window.localStorage.getItem("admin_access_token");
 }
 
 export function getAdminProfile() {
   return window.localStorage.getItem("admin_profile");
+}
+
+export function parseAdminProfile(profile: string | null): AdminProfile | null {
+  if (!profile) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(profile) as AdminProfile;
+  } catch {
+    return null;
+  }
 }
 
 export function getAdminSessionExpiresAt() {
@@ -44,6 +62,11 @@ export function clearAdminSession() {
   window.localStorage.removeItem("admin_access_token");
   window.localStorage.removeItem("admin_profile");
   window.localStorage.removeItem("admin_expires_at");
+  window.dispatchEvent(new Event(ADMIN_SESSION_EVENT));
+}
+
+export function updateAdminProfile(profile: AdminProfile) {
+  window.localStorage.setItem("admin_profile", JSON.stringify(profile));
   window.dispatchEvent(new Event(ADMIN_SESSION_EVENT));
 }
 

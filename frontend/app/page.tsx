@@ -294,7 +294,7 @@ function StatCard({
     <article className="rounded-[10px] border border-white/70 bg-white/90 p-5 shadow-[0_20px_45px_rgba(18,38,63,0.08)] backdrop-blur">
       <div className="mb-4 flex items-center justify-between">
         <p className="text-sm font-medium text-slate-500">{title}</p>
-        <div className={`grid h-10 w-10 place-items-center rounded-[4px]`}>
+        <div className={`grid h-10 w-10 place-items-center rounded-sm`}>
           {icon ? <span className="text-xl font-semibold">{icon}</span> : null}
         </div>
       </div>

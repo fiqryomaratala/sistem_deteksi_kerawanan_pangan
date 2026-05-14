@@ -4,6 +4,7 @@ import hmac
 import json
 import os
 import secrets
+from pathlib import Path
 from datetime import UTC, datetime, timedelta
 
 from fastapi import Depends
@@ -16,6 +17,14 @@ from app.logging_config import get_logger
 
 logger = get_logger(__name__)
 bearer_scheme = HTTPBearer(auto_error=False)
+UPLOAD_ROOT = Path(__file__).resolve().parents[2] / "uploads" / "admin-photos"
+MAX_PHOTO_SIZE_BYTES = 2 * 1024 * 1024
+ALLOWED_PHOTO_EXTENSIONS = {
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".png": "image/png",
+    ".webp": "image/webp",
+}
 
 
 class AuthServiceError(Exception):
@@ -83,6 +92,18 @@ def verify_admin_password(password: str, stored_password_hash: str) -> bool:
 
     recomputed_hash = hash_admin_password(password, salt=password_salt)
     return hmac.compare_digest(recomputed_hash, stored_password_hash)
+
+
+def build_admin_profile(admin_user: models.AdminUser) -> dict:
+    photo_url = None
+    if admin_user.profile_photo_path:
+        photo_url = f"/uploads/{admin_user.profile_photo_path.replace(os.sep, '/')}"
+
+    return {
+        "username": admin_user.username,
+        "role": admin_user.role,
+        "photo_url": photo_url,
+    }
 
 
 def _build_signature(payload_b64: str, token_secret: str) -> str:
@@ -164,10 +185,7 @@ def login_admin(db: Session, username: str, password: str) -> dict:
         "access_token": token,
         "token_type": "bearer",
         "expires_at": expires_at,
-        "admin": {
-            "username": admin_user.username,
-            "role": admin_user.role,
-        },
+        "admin": build_admin_profile(admin_user),
     }
 
 
@@ -194,6 +212,82 @@ def get_current_admin(
         raise AuthServiceError("Admin tidak ditemukan atau tidak aktif", status_code=401)
 
     return {
+        "id": admin_user.id,
         "username": admin_user.username,
         "role": admin_user.role,
+        "photo_url": build_admin_profile(admin_user)["photo_url"],
     }
+
+
+def update_admin_password(
+    db: Session,
+    admin_id: int,
+    current_password: str,
+    new_password: str,
+) -> dict:
+    admin_user = db.query(models.AdminUser).filter(models.AdminUser.id == admin_id).first()
+
+    if admin_user is None or not admin_user.is_active:
+        raise AuthServiceError("Admin tidak ditemukan atau tidak aktif", status_code=404)
+
+    if not verify_admin_password(current_password, admin_user.password_hash):
+        raise AuthServiceError("Password saat ini tidak sesuai", status_code=400)
+
+    if current_password == new_password:
+        raise AuthServiceError("Password baru harus berbeda dari password saat ini", status_code=400)
+
+    admin_user.password_hash = hash_admin_password(new_password)
+    db.add(admin_user)
+    db.commit()
+    db.refresh(admin_user)
+
+    logger.info("Password admin berhasil diperbarui untuk %s", admin_user.username)
+    return build_admin_profile(admin_user)
+
+
+def update_admin_profile_photo(
+    db: Session,
+    admin_id: int,
+    file_bytes: bytes,
+    filename: str,
+    content_type: str | None,
+) -> dict:
+    admin_user = db.query(models.AdminUser).filter(models.AdminUser.id == admin_id).first()
+
+    if admin_user is None or not admin_user.is_active:
+        raise AuthServiceError("Admin tidak ditemukan atau tidak aktif", status_code=404)
+
+    if not file_bytes:
+        raise AuthServiceError("File foto profil tidak boleh kosong", status_code=400)
+
+    if len(file_bytes) > MAX_PHOTO_SIZE_BYTES:
+        raise AuthServiceError("Ukuran foto profil maksimal 2 MB", status_code=400)
+
+    suffix = Path(filename).suffix.lower()
+    if suffix not in ALLOWED_PHOTO_EXTENSIONS:
+        raise AuthServiceError("Format foto profil harus JPG, PNG, atau WEBP", status_code=400)
+
+    expected_content_type = ALLOWED_PHOTO_EXTENSIONS[suffix]
+    if content_type and content_type != expected_content_type:
+        raise AuthServiceError("Tipe file foto profil tidak sesuai dengan ekstensi", status_code=400)
+
+    UPLOAD_ROOT.mkdir(parents=True, exist_ok=True)
+
+    previous_file = admin_user.profile_photo_path
+    safe_filename = f"admin-{admin_user.id}-{secrets.token_hex(8)}{suffix}"
+    relative_path = Path("admin-photos") / safe_filename
+    output_path = UPLOAD_ROOT / safe_filename
+    output_path.write_bytes(file_bytes)
+
+    admin_user.profile_photo_path = str(relative_path)
+    db.add(admin_user)
+    db.commit()
+    db.refresh(admin_user)
+
+    if previous_file:
+        previous_path = UPLOAD_ROOT.parent / previous_file
+        if previous_path.exists():
+            previous_path.unlink(missing_ok=True)
+
+    logger.info("Foto profil admin berhasil diperbarui untuk %s", admin_user.username)
+    return build_admin_profile(admin_user)

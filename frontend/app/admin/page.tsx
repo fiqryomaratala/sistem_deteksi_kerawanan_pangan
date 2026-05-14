@@ -303,9 +303,9 @@ function StatCard({
   icon?: ReactNode;
 }) {
   return (
-    <article className="rounded-[4px] bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+    <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
       <div className="flex items-center gap-4 p-6">
-        <div className={`grid h-24 w-24 place-items-center rounded-[4px]`}>
+        <div className={`grid h-24 w-24 place-items-center rounded-sm`}>
           {icon ? <span className="text-xl font-semibold">{icon}</span> : null}
         </div>
         <div className="min-w-0">
@@ -336,11 +336,11 @@ export default async function AdminPage() {
       description="Ringkasan kondisi deteksi kerawanan pangan untuk kebutuhan admin."
       headerActions={
         <>
-          <div className="rounded-[4px] border border-slate-200 bg-[#f8f9fc] px-4 py-3 text-sm text-slate-600">
+          <div className="rounded-sm border border-slate-200 bg-[#f8f9fc] px-4 py-3 text-sm text-slate-600">
             Tahun analisis:{" "}
             <span className="font-semibold text-slate-900">{trend.tahun ?? "Semua"}</span>
           </div>
-          <div className="rounded-[4px] border border-slate-200 bg-[#f8f9fc] px-4 py-3 text-sm text-slate-600">
+          <div className="rounded-sm border border-slate-200 bg-[#f8f9fc] px-4 py-3 text-sm text-slate-600">
             Puncak bulan:{" "}
             <span className="font-semibold text-slate-900">
               {peakMonth.total > 0
@@ -389,7 +389,7 @@ export default async function AdminPage() {
               <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
                 <div className="border-b border-slate-200 px-6 py-4">
                   <h2 className="text-lg font-semibold text-slate-900">
-                    Monthly Activity
+                    Aktivitas Bulanan
                   </h2>
                   <p className="mt-1 text-sm text-slate-500">
                     Jumlah prediksi per bulan dengan warna mengikuti status dominan.
@@ -448,7 +448,7 @@ export default async function AdminPage() {
                 <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
                   <div className="border-b border-slate-200 px-6 py-4">
                     <h2 className="text-lg font-semibold text-slate-900">
-                      Status Distribution
+                      Distribusi Status
                     </h2>
                     <p className="mt-1 text-sm text-slate-500">
                       Komposisi hasil prediksi yang tersimpan.
@@ -481,7 +481,7 @@ export default async function AdminPage() {
                 <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
                   <div className="border-b border-slate-200 px-6 py-4">
                     <h2 className="text-lg font-semibold text-slate-900">
-                      Latest Prediction
+                      Prediksi Terbaru
                     </h2>
                     <p className="mt-1 text-sm text-slate-500">
                       Detail hasil prediksi paling baru.
@@ -547,7 +547,7 @@ export default async function AdminPage() {
               <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
                 <div className="border-b border-slate-200 px-6 py-4">
                   <h2 className="text-lg font-semibold text-slate-900">
-                    Recent Predictions
+                    Prediksi Terbaru
                   </h2>
                   <p className="mt-1 text-sm text-slate-500">
                     Histori prediksi terbaru untuk peninjauan cepat.
@@ -611,7 +611,7 @@ export default async function AdminPage() {
               <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
                 <div className="border-b border-slate-200 px-6 py-4">
                   <h2 className="text-lg font-semibold text-slate-900">
-                    Activity Feed
+                    Umpan Aktivitas
                   </h2>
                   <p className="mt-1 text-sm text-slate-500">
                     Ringkasan cepat dari entri yang baru masuk.
@@ -648,8 +648,8 @@ export default async function AdminPage() {
                       </div>
                     ))
                   ) : (
-                    <div className="rounded-[4px] bg-[#f8f9fc] px-4 py-5 text-sm text-slate-500">
-                      Activity feed akan muncul setelah data prediksi mulai masuk.
+                    <div className="rounded-sm bg-[#f8f9fc] px-4 py-5 text-sm text-slate-500">
+                      Umpan aktivitas akan muncul setelah data prediksi mulai masuk.
                     </div>
                   )}
                 </div>

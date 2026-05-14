@@ -59,6 +59,7 @@ class AdminUser(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, nullable=False, unique=True, index=True)
     password_hash = Column(String, nullable=False)
+    profile_photo_path = Column(String, nullable=True)
     role = Column(String, nullable=False, default="admin")
     is_active = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime, default=utc_now)

@@ -5,7 +5,7 @@ import { AdminWelcomeToast } from "./admin-welcome-toast";
 import { LogoutButton } from "./logout-button";
 
 type AdminShellProps = {
-  activeItem: "overview" | "ml" | "history";
+  activeItem: "overview" | "ml" | "history" | "settings";
   title: string;
   description: string;
   headerActions?: ReactNode;
@@ -24,7 +24,7 @@ function NavItem({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-3 rounded-[4px] px-4 py-3 text-sm font-medium transition ${
+      className={`flex items-center gap-3 rounded-sm px-4 py-3 text-sm font-medium transition ${
         active
           ? "bg-[#6777ef] text-white"
           : "text-slate-600 hover:bg-[#f8f9fc] hover:text-slate-900"
@@ -51,7 +51,7 @@ export function AdminShell({
         <aside className="border-r border-slate-200 bg-white lg:sticky lg:top-0 lg:h-screen lg:self-start lg:overflow-y-auto">
           <div className="border-b border-slate-200 px-6 py-5">
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-[4px] bg-[#6777ef] text-sm font-bold text-white">
+              <div className="grid h-10 w-10 place-items-center rounded-sm bg-[#6777ef] text-sm font-bold text-white">
                 SI
               </div>
               <div>
@@ -66,26 +66,23 @@ export function AdminShell({
               Dashboard
             </p>
             <nav className="mt-4 space-y-1">
-              <NavItem href="/admin" label="Overview" active={activeItem === "overview"} />
-              <NavItem href="/admin/ml" label="ML Prediction" active={activeItem === "ml"} />
+              <NavItem href="/admin" label="Ringkasan" active={activeItem === "overview"} />
+              <NavItem href="/admin/ml" label="Prediksi ML" active={activeItem === "ml"} />
               <NavItem
                 href="/admin/history"
                 label="Riwayat Prediksi"
                 active={activeItem === "history"}
               />
-              <div className="flex items-center gap-3 rounded-[4px] px-4 py-3 text-sm text-slate-600">
-                <span className="h-2 w-2 rounded-full bg-slate-300" />
-                Monitoring Bulanan
-              </div>
-              <div className="flex items-center gap-3 rounded-[4px] px-4 py-3 text-sm text-slate-600">
-                <span className="h-2 w-2 rounded-full bg-slate-300" />
-                Analisis Status
-              </div>
+              <NavItem
+                href="/admin/settings"
+                label="Pengaturan"
+                active={activeItem === "settings"}
+              />
             </nav>
           </div>
 
           <div className="px-6 py-5">
-            <div className="rounded-[4px] bg-[#f8f9fc] p-4">
+            <div className="rounded-sm bg-[#f8f9fc] p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
                 Catatan
               </p>

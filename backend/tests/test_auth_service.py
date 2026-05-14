@@ -8,11 +8,13 @@ from sqlalchemy.orm import sessionmaker
 from app import models
 from app.services.auth import (
     AuthServiceError,
+    build_admin_profile,
     create_admin_token,
     decode_admin_token,
     get_admin_auth_settings,
     hash_admin_password,
     login_admin,
+    update_admin_password,
     verify_admin_password,
 )
 
@@ -57,6 +59,7 @@ class AuthServiceTestCase(unittest.TestCase):
         self.assertEqual(result["token_type"], "bearer")
         self.assertEqual(result["admin"]["username"], "admin")
         self.assertEqual(result["admin"]["role"], "admin")
+        self.assertIsNone(result["admin"]["photo_url"])
         self.assertTrue(result["access_token"])
 
     def test_login_admin_rejects_invalid_credentials(self):
@@ -105,3 +108,55 @@ class AuthServiceTestCase(unittest.TestCase):
 
         self.assertEqual(context.exception.status_code, 500)
         self.assertEqual(context.exception.message, "Konfigurasi login admin belum lengkap")
+
+    def test_update_admin_password_rehashes_password(self):
+        self._seed_admin(password="password-lama")
+
+        with self._session() as db:
+            admin_user = db.query(models.AdminUser).filter_by(username="admin").first()
+            result = update_admin_password(
+                db,
+                admin_id=admin_user.id,
+                current_password="password-lama",
+                new_password="password-baru-123",
+            )
+
+        self.assertEqual(result["username"], "admin")
+
+        with self._session() as db:
+            refreshed = db.query(models.AdminUser).filter_by(username="admin").first()
+            self.assertTrue(
+                verify_admin_password("password-baru-123", refreshed.password_hash)
+            )
+            self.assertFalse(
+                verify_admin_password("password-lama", refreshed.password_hash)
+            )
+
+    def test_update_admin_password_rejects_invalid_current_password(self):
+        self._seed_admin(password="password-lama")
+
+        with self._session() as db:
+            admin_user = db.query(models.AdminUser).filter_by(username="admin").first()
+            with self.assertRaises(AuthServiceError) as context:
+                update_admin_password(
+                    db,
+                    admin_id=admin_user.id,
+                    current_password="salah",
+                    new_password="password-baru-123",
+                )
+
+        self.assertEqual(context.exception.status_code, 400)
+        self.assertEqual(context.exception.message, "Password saat ini tidak sesuai")
+
+    def test_build_admin_profile_returns_upload_url(self):
+        admin_user = models.AdminUser(
+            username="admin",
+            password_hash=hash_admin_password("super-rahasia"),
+            profile_photo_path="admin-photos/foto.png",
+            role="admin",
+            is_active=True,
+        )
+
+        profile = build_admin_profile(admin_user)
+
+        self.assertEqual(profile["photo_url"], "/uploads/admin-photos/foto.png")

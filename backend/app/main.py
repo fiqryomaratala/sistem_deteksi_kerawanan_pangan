@@ -1,9 +1,11 @@
 import os
+from pathlib import Path
 
 from fastapi import FastAPI, Depends, File, Query, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
 from app.database import Base, engine, get_db
@@ -12,6 +14,8 @@ from app.logging_config import get_logger, setup_logging
 from app.schemas import (
     AdminLoginRequest,
     AdminLoginResponse,
+    AdminMessageResponse,
+    AdminPasswordResetRequest,
     AdminSessionResponse,
     DatasetImportResponse,
     DashboardDistributionResponse,
@@ -23,7 +27,13 @@ from app.schemas import (
     PredictionRequest,
     PredictionResponse,
 )
-from app.services.auth import AuthServiceError, get_current_admin, login_admin
+from app.services.auth import (
+    AuthServiceError,
+    get_current_admin,
+    login_admin,
+    update_admin_password,
+    update_admin_profile_photo,
+)
 from app.services.predict import (
     get_dashboard_distribution,
     get_dashboard_monthly_trend,
@@ -44,6 +54,9 @@ app = FastAPI(
     title="Sistem Deteksi Kerawanan Pangan Kabupaten Indramayu",
     version="1.0.0"
 )
+UPLOADS_DIR = Path(__file__).resolve().parents[1] / "uploads"
+
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def get_allowed_origins() -> list[str]:
@@ -64,6 +77,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 
 
 @app.middleware("http")
@@ -149,6 +163,47 @@ def admin_me(admin=Depends(get_current_admin)):
     return {
         "authenticated": True,
         "admin": admin,
+    }
+
+
+@app.post("/admin/auth/reset-password", response_model=AdminMessageResponse)
+def admin_reset_password(
+    request: AdminPasswordResetRequest,
+    db: Session = Depends(get_db),
+    admin=Depends(get_current_admin),
+):
+    updated_admin = update_admin_password(
+        db,
+        admin_id=admin["id"],
+        current_password=request.current_password,
+        new_password=request.new_password,
+    )
+    return {
+        "message": "Password admin berhasil diperbarui",
+        "admin": updated_admin,
+    }
+
+
+@app.post("/admin/profile/photo", response_model=AdminMessageResponse)
+async def admin_upload_profile_photo(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    admin=Depends(get_current_admin),
+):
+    if not file.filename:
+        raise AuthServiceError("Nama file foto profil tidak ditemukan", status_code=400)
+
+    file_bytes = await file.read()
+    updated_admin = update_admin_profile_photo(
+        db,
+        admin_id=admin["id"],
+        file_bytes=file_bytes,
+        filename=file.filename,
+        content_type=file.content_type,
+    )
+    return {
+        "message": "Foto profil admin berhasil diperbarui",
+        "admin": updated_admin,
     }
 
 
