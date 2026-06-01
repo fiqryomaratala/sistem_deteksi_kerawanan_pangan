@@ -15,6 +15,10 @@ class PredictionRequest(BaseModel):
     minyak_kebutuhan: float = Field(..., gt=0)
     telur_tersedia: float = Field(..., gt=0)
     telur_kebutuhan: float = Field(..., gt=0)
+    daging_sapi_tersedia: float = Field(..., gt=0)
+    daging_sapi_kebutuhan: float = Field(..., gt=0)
+    daging_ayam_tersedia: float = Field(..., gt=0)
+    daging_ayam_kebutuhan: float = Field(..., gt=0)
 
 class PredictionResponse(BaseModel):
     id: int
@@ -42,6 +46,10 @@ class PredictionHistoryItem(BaseModel):
     minyak_kebutuhan: float
     telur_tersedia: float
     telur_kebutuhan: float
+    daging_sapi_tersedia: float
+    daging_sapi_kebutuhan: float
+    daging_ayam_tersedia: float
+    daging_ayam_kebutuhan: float
     beras_ratio: float
     minyak_ratio: float
     telur_ratio: float

@@ -32,7 +32,9 @@ class PredictionServiceError(Exception):
 def predict_and_save(db: Session, data: dict):
     if data["beras_kebutuhan"] == 0 or \
        data["minyak_kebutuhan"] == 0 or \
-       data["telur_kebutuhan"] == 0:
+       data["telur_kebutuhan"] == 0 or \
+       data["daging_sapi_kebutuhan"] == 0 or \
+       data["daging_ayam_kebutuhan"] == 0:
         raise PredictionServiceError("Kebutuhan tidak boleh 0")
 
     bulan = data.get("bulan")
@@ -81,7 +83,11 @@ def predict_and_save(db: Session, data: dict):
             minyak_tersedia=data["minyak_tersedia"],
             minyak_kebutuhan=data["minyak_kebutuhan"],
             telur_tersedia=data["telur_tersedia"],
-            telur_kebutuhan=data["telur_kebutuhan"]
+            telur_kebutuhan=data["telur_kebutuhan"],
+            daging_sapi_tersedia=data["daging_sapi_tersedia"],
+            daging_sapi_kebutuhan=data["daging_sapi_kebutuhan"],
+            daging_ayam_tersedia=data["daging_ayam_tersedia"],
+            daging_ayam_kebutuhan=data["daging_ayam_kebutuhan"]
         )
 
         db.add(food_data)
@@ -131,6 +137,10 @@ def serialize_prediction(prediction):
         "minyak_kebutuhan": food_data.minyak_kebutuhan,
         "telur_tersedia": food_data.telur_tersedia,
         "telur_kebutuhan": food_data.telur_kebutuhan,
+        "daging_sapi_tersedia": food_data.daging_sapi_tersedia,
+        "daging_sapi_kebutuhan": food_data.daging_sapi_kebutuhan,
+        "daging_ayam_tersedia": food_data.daging_ayam_tersedia,
+        "daging_ayam_kebutuhan": food_data.daging_ayam_kebutuhan,
         "beras_ratio": prediction.beras_ratio,
         "minyak_ratio": prediction.minyak_ratio,
         "telur_ratio": prediction.telur_ratio,
@@ -161,6 +171,10 @@ def parse_import_row(row: dict[str, str]) -> dict:
             "minyak_kebutuhan": float(row["minyak_kebutuhan"]),
             "telur_tersedia": float(row["telur_tersedia"]),
             "telur_kebutuhan": float(row["telur_kebutuhan"]),
+            "daging_sapi_tersedia": float(row["daging_sapi_tersedia"]),
+            "daging_sapi_kebutuhan": float(row["daging_sapi_kebutuhan"]),
+            "daging_ayam_tersedia": float(row["daging_ayam_tersedia"]),
+            "daging_ayam_kebutuhan": float(row["daging_ayam_kebutuhan"]),
         }
     except KeyError as exc:
         raise PredictionServiceError(

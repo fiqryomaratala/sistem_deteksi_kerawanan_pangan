@@ -22,6 +22,10 @@ type PredictionHistoryItem = {
   minyak_kebutuhan: number;
   telur_tersedia: number;
   telur_kebutuhan: number;
+  daging_sapi_tersedia: number;
+  daging_sapi_kebutuhan: number;
+  daging_ayam_tersedia: number;
+  daging_ayam_kebutuhan: number;
 };
 
 type PredictionHistoryResponse = {
@@ -413,6 +417,8 @@ export default async function AdminHistoryPage({
                       <p>Beras {formatNumber(item.beras_tersedia)} / {formatNumber(item.beras_kebutuhan)}</p>
                       <p>Minyak {formatNumber(item.minyak_tersedia)} / {formatNumber(item.minyak_kebutuhan)}</p>
                       <p>Telur {formatNumber(item.telur_tersedia)} / {formatNumber(item.telur_kebutuhan)}</p>
+                      <p>Daging Sapi {formatNumber(item.daging_sapi_tersedia)} / {formatNumber(item.daging_sapi_kebutuhan)}</p>
+                      <p>Daging Ayam {formatNumber(item.daging_ayam_tersedia)} / {formatNumber(item.daging_ayam_kebutuhan)}</p>
                     </td>
                     <td className="px-3 py-4 text-slate-600">
                       <p className="max-w-xs leading-6">

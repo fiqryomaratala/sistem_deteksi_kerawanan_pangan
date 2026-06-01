@@ -50,6 +50,10 @@ type PredictionFormState = {
   minyak_kebutuhan: string;
   telur_tersedia: string;
   telur_kebutuhan: string;
+  daging_sapi_tersedia: string;
+  daging_sapi_kebutuhan: string;
+  daging_ayam_tersedia: string;
+  daging_ayam_kebutuhan: string;
 };
 
 const API_BASE_URL =
@@ -91,6 +95,10 @@ function createInitialFormState(): PredictionFormState {
     minyak_kebutuhan: "",
     telur_tersedia: "",
     telur_kebutuhan: "",
+    daging_sapi_tersedia: "",
+    daging_sapi_kebutuhan: "",
+    daging_ayam_tersedia: "",
+    daging_ayam_kebutuhan: "",
   };
 }
 
@@ -153,6 +161,10 @@ export function AdminMlPanel() {
       minyak_kebutuhan: Number(predictionForm.minyak_kebutuhan),
       telur_tersedia: Number(predictionForm.telur_tersedia),
       telur_kebutuhan: Number(predictionForm.telur_kebutuhan),
+      daging_sapi_tersedia: Number(predictionForm.daging_sapi_tersedia),
+      daging_sapi_kebutuhan: Number(predictionForm.daging_sapi_kebutuhan),
+      daging_ayam_tersedia: Number(predictionForm.daging_ayam_tersedia),
+      daging_ayam_kebutuhan: Number(predictionForm.daging_ayam_kebutuhan),
     };
 
     setPredictionSubmitting(true);
@@ -318,6 +330,10 @@ export function AdminMlPanel() {
                   "minyak_kebutuhan",
                   "telur_tersedia",
                   "telur_kebutuhan",
+                  "daging_sapi_tersedia",
+                  "daging_sapi_kebutuhan",
+                  "daging_ayam_tersedia",
+                  "daging_ayam_kebutuhan",
                 ] as Array<keyof PredictionFormState>
               ).map((field) => (
                 <label key={field} className="space-y-2 text-sm text-slate-600">
@@ -413,7 +429,7 @@ export function AdminMlPanel() {
           <div className="rounded-sm bg-[#f8f9fc] px-4 py-4 text-sm text-slate-600">
             Format kolom CSV:
             <code className="mt-2 block overflow-x-auto rounded-sm bg-white px-3 py-3 text-[13px] text-slate-700">
-              tahun,bulan,catatan,beras_tersedia,beras_kebutuhan,minyak_tersedia,minyak_kebutuhan,telur_tersedia,telur_kebutuhan
+              tahun,bulan,catatan,beras_tersedia,beras_kebutuhan,minyak_tersedia,minyak_kebutuhan,telur_tersedia,telur_kebutuhan,daging_sapi_tersedia,daging_sapi_kebutuhan,daging_ayam_tersedia,daging_ayam_kebutuhan
             </code>
           </div>
 

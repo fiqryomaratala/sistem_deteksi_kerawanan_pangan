@@ -25,6 +25,12 @@ class FoodData(Base):
     telur_tersedia = Column(Float, nullable=False)
     telur_kebutuhan = Column(Float, nullable=False)
 
+    daging_sapi_tersedia = Column(Float, nullable=False)
+    daging_sapi_kebutuhan = Column(Float, nullable=False)
+
+    daging_ayam_tersedia = Column(Float, nullable=False)
+    daging_ayam_kebutuhan = Column(Float, nullable=False)
+
     created_at = Column(DateTime, default=utc_now)
 
     prediction = relationship("PredictionResult", back_populates="food_data", uselist=False)
