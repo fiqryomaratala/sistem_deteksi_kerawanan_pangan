@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useSyncExternalStore } from "react";
 import { AdminAuthGuard } from "./admin-auth-guard";
 import { AdminWelcomeToast } from "./admin-welcome-toast";
 import { LogoutButton } from "./logout-button";
+import { getAdminProfile, parseAdminProfile, subscribeAdminSession } from "./admin-session";
 
 type AdminShellProps = {
   activeItem: "overview" | "ml" | "history" | "settings";
@@ -43,19 +46,28 @@ export function AdminShell({
   headerActions,
   children,
 }: AdminShellProps) {
+  const profileData = useSyncExternalStore(
+    subscribeAdminSession,
+    getAdminProfile,
+    () => null,
+  );
+  const profile = parseAdminProfile(profileData);
+  const displayName = profile?.display_name || profile?.username || "Admin";
+  const initials = displayName.substring(0, 2).toUpperCase();
+
   return (
     <main className="min-h-screen bg-[#f6f9fe] text-slate-900">
       <AdminAuthGuard />
       <AdminWelcomeToast />
       <div className="grid min-h-screen lg:grid-cols-[250px_minmax(0,1fr)]">
-        <aside className="border-r border-slate-200 bg-white lg:sticky lg:top-0 lg:h-screen lg:self-start lg:overflow-y-auto">
+        <aside className="border-r border-slate-200 bg-white lg:sticky lg:top-0 lg:h-screen lg:self-start lg:overflow-y-auto lg:flex lg:flex-col">
           <div className="border-b border-slate-200 px-6 py-5">
             <div className="flex items-center gap-3">
               <div className="grid h-10 w-10 place-items-center rounded-sm bg-[#6777ef] text-sm font-bold text-white">
-                SI
+                {initials}
               </div>
               <div>
-                <p className="text-base font-semibold text-slate-900">Stisla Admin</p>
+                <p className="text-base font-semibold text-slate-900">{displayName}</p>
                 <p className="text-sm text-slate-500">Kerawanan Pangan</p>
               </div>
             </div>
@@ -81,20 +93,8 @@ export function AdminShell({
             </nav>
           </div>
 
-          <div className="px-6 py-5">
-            <div className="rounded-sm bg-[#f8f9fc] p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
-                Catatan
-              </p>
-              <p className="mt-3 text-sm leading-6 text-slate-600">
-                Sidebar admin dibuat tetap di tempat agar navigasi tetap mudah diakses
-                saat konten utama discroll ke bawah.
-              </p>
-            </div>
-
-            <div className="mt-4">
-              <LogoutButton />
-            </div>
+          <div className="mt-auto px-6 py-5">
+            <LogoutButton />
           </div>
         </aside>
 

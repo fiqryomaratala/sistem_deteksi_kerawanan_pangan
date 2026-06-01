@@ -116,6 +116,7 @@ class AdminLoginRequest(BaseModel):
 
 class AdminProfile(BaseModel):
     username: str
+    display_name: Optional[str] = None
     role: str
     photo_url: Optional[str] = None
 
@@ -135,6 +136,10 @@ class AdminSessionResponse(BaseModel):
 class AdminPasswordResetRequest(BaseModel):
     current_password: str = Field(..., min_length=1)
     new_password: str = Field(..., min_length=8)
+
+
+class AdminDisplayNameRequest(BaseModel):
+    display_name: str = Field(..., min_length=1, max_length=100)
 
 
 class AdminMessageResponse(BaseModel):

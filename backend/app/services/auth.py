@@ -101,6 +101,7 @@ def build_admin_profile(admin_user: models.AdminUser) -> dict:
 
     return {
         "username": admin_user.username,
+        "display_name": admin_user.display_name,
         "role": admin_user.role,
         "photo_url": photo_url,
     }
@@ -242,6 +243,25 @@ def update_admin_password(
     db.refresh(admin_user)
 
     logger.info("Password admin berhasil diperbarui untuk %s", admin_user.username)
+    return build_admin_profile(admin_user)
+
+
+def update_admin_display_name(
+    db: Session,
+    admin_id: int,
+    display_name: str,
+) -> dict:
+    admin_user = db.query(models.AdminUser).filter(models.AdminUser.id == admin_id).first()
+
+    if admin_user is None or not admin_user.is_active:
+        raise AuthServiceError("Admin tidak ditemukan atau tidak aktif", status_code=404)
+
+    admin_user.display_name = display_name.strip()
+    db.add(admin_user)
+    db.commit()
+    db.refresh(admin_user)
+
+    logger.info("Display name admin berhasil diperbarui untuk %s", admin_user.username)
     return build_admin_profile(admin_user)
 
 

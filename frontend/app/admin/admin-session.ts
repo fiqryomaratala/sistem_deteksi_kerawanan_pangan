@@ -3,6 +3,7 @@ const ADMIN_WELCOME_TOAST_EVENT = "admin-welcome-toast";
 
 export type AdminProfile = {
   username: string;
+  display_name?: string | null;
   role: string;
   photo_url?: string | null;
 };

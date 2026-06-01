@@ -12,6 +12,7 @@ import {
 type SettingsPanelProps = {
   initialProfile: {
     username: string;
+    display_name?: string | null;
     role: string;
     photo_url?: string | null;
   };
@@ -21,6 +22,7 @@ type ApiSuccessResponse = {
   message: string;
   admin: {
     username: string;
+    display_name?: string | null;
     role: string;
     photo_url?: string | null;
   };
@@ -76,10 +78,15 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
 
     return {
       username: storedProfile.username,
+      display_name: storedProfile.display_name ?? null,
       role: storedProfile.role,
       photo_url: storedProfile.photo_url ?? null,
     };
   });
+  const [displayNameForm, setDisplayNameForm] = useState(initialProfile.display_name || "");
+  const [displayNameError, setDisplayNameError] = useState<string | null>(null);
+  const [displayNameMessage, setDisplayNameMessage] = useState<string | null>(null);
+  const [isUpdatingDisplayName, setIsUpdatingDisplayName] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [photoMessage, setPhotoMessage] = useState<string | null>(null);
@@ -115,6 +122,7 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
     setProfile(nextProfile);
     updateAdminProfile({
       username: nextProfile.username,
+      display_name: nextProfile.display_name ?? null,
       role: nextProfile.role,
       photo_url: nextProfile.photo_url ?? null,
     });
@@ -144,6 +152,55 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
     }
 
     setSelectedFile(nextFile);
+  }
+
+  async function handleDisplayNameSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setDisplayNameError(null);
+    setDisplayNameMessage(null);
+
+    const trimmedName = displayNameForm.trim();
+    if (!trimmedName) {
+      setDisplayNameError("Nama tampilan tidak boleh kosong.");
+      return;
+    }
+
+    const token = getAdminAccessToken();
+    if (!token) {
+      setDisplayNameError("Sesi admin tidak ditemukan. Silakan login ulang.");
+      return;
+    }
+
+    setIsUpdatingDisplayName(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/admin/profile/display-name`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ display_name: trimmedName }),
+      });
+
+      const payload = (await response.json().catch(() => null)) as
+        | ApiSuccessResponse
+        | ApiErrorResponse
+        | null;
+
+      if (!response.ok) {
+        setDisplayNameError(payload && "message" in payload ? payload.message ?? "Update nama gagal." : "Update nama gagal.");
+        return;
+      }
+
+      const result = payload as ApiSuccessResponse;
+      syncProfile(result.admin);
+      setDisplayNameMessage(result.message);
+    } catch {
+      setDisplayNameError("Tidak dapat menghubungi server untuk update nama.");
+    } finally {
+      setIsUpdatingDisplayName(false);
+    }
   }
 
   async function handlePhotoSubmit(event: FormEvent<HTMLFormElement>) {
@@ -271,7 +328,8 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
     }
   }
 
-  const initials = profile.username.slice(0, 2).toUpperCase();
+  const initials = (profile.display_name || profile.username).slice(0, 2).toUpperCase();
+  const displayName = profile.display_name || profile.username;
 
   return (
     <section className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
@@ -288,7 +346,7 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
             {photoPreviewUrl ? (
               <Image
                 src={photoPreviewUrl}
-                alt={`Foto profil ${profile.username}`}
+                alt={`Foto profil ${displayName}`}
                 unoptimized
                 width={112}
                 height={112}
@@ -299,7 +357,7 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
                 {initials}
               </div>
             )}
-            <p className="mt-4 text-lg font-semibold text-slate-900">{profile.username}</p>
+            <p className="mt-4 text-lg font-semibold text-slate-900">{displayName}</p>
             <p className="text-sm text-slate-500">{profile.role}</p>
           </div>
 
@@ -311,6 +369,61 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
       </article>
 
       <div className="grid gap-6">
+        <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+          <div className="border-b border-slate-200 px-6 py-4">
+            <div className="flex items-center gap-3">
+              <div className="grid h-10 w-10 place-items-center rounded-sm bg-indigo-100 text-indigo-700">
+                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-current">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-slate-900">Ubah Nama Tampilan</h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  Atur nama yang ditampilkan di sidebar dashboard.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <form className="space-y-4 p-6" onSubmit={handleDisplayNameSubmit}>
+            <label className="block space-y-2 text-sm text-slate-600">
+              <span>Nama tampilan</span>
+              <input
+                type="text"
+                value={displayNameForm}
+                onChange={(e) => setDisplayNameForm(e.target.value)}
+                placeholder="Masukkan nama tampilan"
+                className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none transition focus:border-[#6777ef]"
+              />
+            </label>
+
+            <div className="rounded-sm border border-dashed border-slate-200 px-4 py-4 text-sm leading-6 text-slate-500">
+              Nama tampilan akan muncul di sidebar dashboard menggantikan email. Username login tetap menggunakan email.
+            </div>
+
+            {displayNameError ? (
+              <div className="rounded-sm border border-rose-200 bg-rose-50 px-4 py-3 text-[13px] text-rose-700">
+                {displayNameError}
+              </div>
+            ) : null}
+
+            {displayNameMessage ? (
+              <div className="rounded-sm border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                {displayNameMessage}
+              </div>
+            ) : null}
+
+            <button
+              type="submit"
+              disabled={isUpdatingDisplayName}
+              className="inline-flex items-center justify-center rounded-sm bg-[#6777ef] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isUpdatingDisplayName ? "Menyimpan..." : "Simpan Nama"}
+            </button>
+          </form>
+        </article>
+
         <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
           <div className="border-b border-slate-200 px-6 py-4">
             <div className="flex items-center gap-3">

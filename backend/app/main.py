@@ -12,6 +12,7 @@ from app.database import Base, engine, get_db
 from app.health import get_health_status
 from app.logging_config import get_logger, setup_logging
 from app.schemas import (
+    AdminDisplayNameRequest,
     AdminLoginRequest,
     AdminLoginResponse,
     AdminMessageResponse,
@@ -31,6 +32,7 @@ from app.services.auth import (
     AuthServiceError,
     get_current_admin,
     login_admin,
+    update_admin_display_name,
     update_admin_password,
     update_admin_profile_photo,
 )
@@ -180,6 +182,23 @@ def admin_reset_password(
     )
     return {
         "message": "Password admin berhasil diperbarui",
+        "admin": updated_admin,
+    }
+
+
+@app.post("/admin/profile/display-name", response_model=AdminMessageResponse)
+def admin_update_display_name(
+    request: AdminDisplayNameRequest,
+    db: Session = Depends(get_db),
+    admin=Depends(get_current_admin),
+):
+    updated_admin = update_admin_display_name(
+        db,
+        admin_id=admin["id"],
+        display_name=request.display_name,
+    )
+    return {
+        "message": "Nama tampilan berhasil diperbarui",
         "admin": updated_admin,
     }
 
