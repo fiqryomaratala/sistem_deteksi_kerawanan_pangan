@@ -22,6 +22,10 @@ type PredictionHistoryItem = {
   minyak_kebutuhan: number;
   telur_tersedia: number;
   telur_kebutuhan: number;
+  daging_sapi_tersedia: number;
+  daging_sapi_kebutuhan: number;
+  daging_ayam_tersedia: number;
+  daging_ayam_kebutuhan: number;
 };
 
 type DashboardSummaryResponse = {
@@ -206,6 +210,31 @@ function formatMonthYear(month: number | null, year: number | null) {
   return `${MONTH_LABELS[month - 1]} ${year}`;
 }
 
+function buildCommodityRatios(prediction: PredictionHistoryItem) {
+  return [
+    {
+      label: "Beras",
+      value: prediction.beras_ratio,
+    },
+    {
+      label: "Minyak",
+      value: prediction.minyak_ratio,
+    },
+    {
+      label: "Telur",
+      value: prediction.telur_ratio,
+    },
+    {
+      label: "Daging sapi",
+      value: prediction.daging_sapi_tersedia / prediction.daging_sapi_kebutuhan,
+    },
+    {
+      label: "Daging ayam",
+      value: prediction.daging_ayam_tersedia / prediction.daging_ayam_kebutuhan,
+    },
+  ];
+}
+
 function getPeakMonth(items: MonthlyTrendItem[]) {
   return [...items].sort((a, b) => b.total - a.total)[0];
 }
@@ -328,6 +357,9 @@ export default async function AdminPage() {
   const peakMonth = getPeakMonth(trend.items);
   const maxTrendValue = Math.max(...trend.items.map((item) => item.total), 1);
   const latestPrediction = summary.latest_prediction;
+  const latestCommodityRatios = latestPrediction
+    ? buildCommodityRatios(latestPrediction)
+    : [];
 
   return (
     <AdminShell
@@ -505,25 +537,15 @@ export default async function AdminPage() {
                           </span>
                         </div>
 
-                        <div className="grid gap-3 sm:grid-cols-3">
-                          <div className="rounded-sm bg-[#f8f9fc] px-4 py-3">
-                            <p className="text-sm text-slate-500">Beras</p>
-                            <p className="mt-1 text-2xl font-semibold text-slate-900">
-                              {latestPrediction.beras_ratio.toFixed(2)}
-                            </p>
-                          </div>
-                          <div className="rounded-sm bg-[#f8f9fc] px-4 py-3">
-                            <p className="text-sm text-slate-500">Minyak</p>
-                            <p className="mt-1 text-2xl font-semibold text-slate-900">
-                              {latestPrediction.minyak_ratio.toFixed(2)}
-                            </p>
-                          </div>
-                          <div className="rounded-sm bg-[#f8f9fc] px-4 py-3">
-                            <p className="text-sm text-slate-500">Telur</p>
-                            <p className="mt-1 text-2xl font-semibold text-slate-900">
-                              {latestPrediction.telur_ratio.toFixed(2)}
-                            </p>
-                          </div>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {latestCommodityRatios.map((item) => (
+                            <div key={item.label} className="rounded-sm bg-[#f8f9fc] px-4 py-3">
+                              <p className="text-sm text-slate-500">{item.label}</p>
+                              <p className="mt-1 text-2xl font-semibold text-slate-900">
+                                {item.value.toFixed(2)}
+                              </p>
+                            </div>
+                          ))}
                         </div>
 
                         <div className="rounded-sm border border-slate-200 px-4 py-4">
