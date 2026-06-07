@@ -19,6 +19,10 @@ type PredictionHistoryItem = {
   minyak_kebutuhan: number;
   telur_tersedia: number;
   telur_kebutuhan: number;
+  daging_sapi_tersedia: number;
+  daging_sapi_kebutuhan: number;
+  daging_ayam_tersedia: number;
+  daging_ayam_kebutuhan: number;
 };
 
 type DashboardSummaryResponse = {
@@ -222,6 +226,31 @@ function getPeakMonth(items: MonthlyTrendItem[]) {
   return [...items].sort((a, b) => b.total - a.total)[0];
 }
 
+function buildCommodityRatios(prediction: PredictionHistoryItem) {
+  return [
+    {
+      label: "Rasio beras",
+      value: prediction.beras_ratio,
+    },
+    {
+      label: "Rasio minyak",
+      value: prediction.minyak_ratio,
+    },
+    {
+      label: "Rasio telur",
+      value: prediction.telur_ratio,
+    },
+    {
+      label: "Rasio daging sapi",
+      value: prediction.daging_sapi_tersedia / prediction.daging_sapi_kebutuhan,
+    },
+    {
+      label: "Rasio daging ayam",
+      value: prediction.daging_ayam_tersedia / prediction.daging_ayam_kebutuhan,
+    },
+  ];
+}
+
 function TotalPredictiionCard () {
   return (
     <svg  
@@ -313,6 +342,9 @@ export default async function Home() {
   const pieGradient = buildPieGradient(distribution.items);
   const latestStatus = summary.latest_prediction?.hasil_prediksi;
   const latestStatusStyle = latestStatus ? STATUS_STYLES[latestStatus] : null;
+  const latestCommodityRatios = summary.latest_prediction
+    ? buildCommodityRatios(summary.latest_prediction)
+    : [];
 
   return (
     <main className="flex min-h-screen w-full flex-1">
@@ -617,25 +649,15 @@ export default async function Home() {
                       ) : null}
                     </div>
 
-                    <div className="grid gap-3 sm:grid-cols-3">
-                      <div className="rounded-[10px] bg-slate-50 px-4 py-3">
-                        <p className="text-sm text-slate-500">Rasio beras</p>
-                        <p className="mt-2 font-[family:var(--font-space-grotesk)] text-2xl font-semibold text-slate-950">
-                          {summary.latest_prediction.beras_ratio.toFixed(2)}
-                        </p>
-                      </div>
-                      <div className="rounded-[10px] bg-slate-50 px-4 py-3">
-                        <p className="text-sm text-slate-500">Rasio minyak</p>
-                        <p className="mt-2 font-[family:var(--font-space-grotesk)] text-2xl font-semibold text-slate-950">
-                          {summary.latest_prediction.minyak_ratio.toFixed(2)}
-                        </p>
-                      </div>
-                      <div className="rounded-[10px] bg-slate-50 px-4 py-3">
-                        <p className="text-sm text-slate-500">Rasio telur</p>
-                        <p className="mt-2 font-[family:var(--font-space-grotesk)] text-2xl font-semibold text-slate-950">
-                          {summary.latest_prediction.telur_ratio.toFixed(2)}
-                        </p>
-                      </div>
+                    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                      {latestCommodityRatios.map((item) => (
+                        <div key={item.label} className="rounded-[10px] bg-slate-50 px-4 py-3">
+                          <p className="text-sm text-slate-500">{item.label}</p>
+                          <p className="mt-2 font-[family:var(--font-space-grotesk)] text-2xl font-semibold text-slate-950">
+                            {formatDecimal(item.value)}
+                          </p>
+                        </div>
+                      ))}
                     </div>
 
                     <div className="rounded-[10px] border border-slate-200/80 px-4 py-4">
