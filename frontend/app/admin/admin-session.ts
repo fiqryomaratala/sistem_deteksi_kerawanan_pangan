@@ -1,5 +1,9 @@
 const ADMIN_SESSION_EVENT = "admin-session-change";
 const ADMIN_WELCOME_TOAST_EVENT = "admin-welcome-toast";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ??
+  process.env.NEXT_PUBLIC_BACKEND_URL ??
+  "http://127.0.0.1:8000";
 
 export type AdminProfile = {
   username: string;
@@ -7,6 +11,23 @@ export type AdminProfile = {
   role: string;
   photo_url?: string | null;
 };
+
+export function resolveAdminPhotoUrl(photoUrl: string | null | undefined) {
+  if (!photoUrl) {
+    return null;
+  }
+
+  if (
+    photoUrl.startsWith("http://") ||
+    photoUrl.startsWith("https://") ||
+    photoUrl.startsWith("blob:") ||
+    photoUrl.startsWith("data:")
+  ) {
+    return photoUrl;
+  }
+
+  return `${API_BASE_URL}${photoUrl}`;
+}
 
 export function getAdminAccessToken() {
   return window.localStorage.getItem("admin_access_token");

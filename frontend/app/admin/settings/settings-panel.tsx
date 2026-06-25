@@ -1,11 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import { AdminProfileAvatar } from "../admin-profile-avatar";
 import {
   getAdminAccessToken,
   getAdminProfile,
   parseAdminProfile,
+  resolveAdminPhotoUrl,
   updateAdminProfile,
 } from "../admin-session";
 
@@ -36,18 +37,6 @@ const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ??
   process.env.NEXT_PUBLIC_BACKEND_URL ??
   "http://127.0.0.1:8000";
-
-function buildPhotoUrl(photoUrl: string | null | undefined) {
-  if (!photoUrl) {
-    return null;
-  }
-
-  if (photoUrl.startsWith("http://") || photoUrl.startsWith("https://")) {
-    return photoUrl;
-  }
-
-  return `${API_BASE_URL}${photoUrl}`;
-}
 
 function CameraIcon() {
   return (
@@ -105,7 +94,7 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
       return URL.createObjectURL(selectedFile);
     }
 
-    return buildPhotoUrl(profile.photo_url);
+    return resolveAdminPhotoUrl(profile.photo_url);
   }, [profile.photo_url, selectedFile]);
 
   useEffect(() => {
@@ -327,8 +316,6 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
       setIsChangingPassword(false);
     }
   }
-
-  const initials = (profile.display_name || profile.username).slice(0, 2).toUpperCase();
   const displayName = profile.display_name || profile.username;
 
   return (
@@ -343,22 +330,15 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
 
         <div className="space-y-5 p-6">
           <div className="flex flex-col items-center rounded-sm bg-[#f8f9fc] px-5 py-6 text-center">
-            {photoPreviewUrl ? (
-              <Image
-                src={photoPreviewUrl}
-                alt={`Foto profil ${displayName}`}
-                unoptimized
-                width={112}
-                height={112}
-                className="h-28 w-28 rounded-full object-cover ring-4 ring-white"
-              />
-            ) : (
-              <div className="grid h-28 w-28 place-items-center rounded-full bg-[#6777ef] text-3xl font-semibold text-white ring-4 ring-white">
-                {initials}
-              </div>
-            )}
+            <AdminProfileAvatar
+              photoUrl={photoPreviewUrl}
+              name={displayName}
+              sizeClassName="h-28 w-28"
+              className="ring-4 ring-white"
+              iconClassName="h-10 w-10"
+            />
             <p className="mt-4 text-lg font-semibold text-slate-900">{displayName}</p>
-            <p className="text-sm text-slate-500">{profile.role}</p>
+            <p className="text-sm lowercase text-slate-500">{profile.role}</p>
           </div>
 
           <div className="rounded-sm border border-dashed border-slate-200 px-4 py-4 text-sm leading-6 text-slate-500">

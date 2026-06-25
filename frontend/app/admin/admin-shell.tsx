@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ReactNode, useSyncExternalStore } from "react";
 import { AdminAuthGuard } from "./admin-auth-guard";
+import { AdminProfileAvatar } from "./admin-profile-avatar";
 import { AdminWelcomeToast } from "./admin-welcome-toast";
 import { LogoutButton } from "./logout-button";
 import { getAdminProfile, parseAdminProfile, subscribeAdminSession } from "./admin-session";
@@ -53,7 +54,7 @@ export function AdminShell({
   );
   const profile = parseAdminProfile(profileData);
   const displayName = profile?.display_name || profile?.username || "Admin";
-  const initials = displayName.substring(0, 2).toUpperCase();
+  const roleLabel = profile?.role || "admin";
 
   return (
     <main className="min-h-screen bg-[#f6f9fe] text-slate-900">
@@ -63,12 +64,16 @@ export function AdminShell({
         <aside className="border-r border-slate-200 bg-white lg:sticky lg:top-0 lg:h-screen lg:self-start lg:overflow-y-auto lg:flex lg:flex-col">
           <div className="border-b border-slate-200 px-6 py-5">
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-sm bg-[#6777ef] text-sm font-bold text-white">
-                {initials}
-              </div>
+              <AdminProfileAvatar
+                photoUrl={profile?.photo_url}
+                name={displayName}
+                sizeClassName="h-10 w-10"
+                className="shrink-0"
+                iconClassName="h-5 w-5"
+              />
               <div>
                 <p className="text-base font-semibold text-slate-900">{displayName}</p>
-                <p className="text-sm text-slate-500">Kerawanan Pangan</p>
+                <p className="text-sm lowercase text-slate-500">{roleLabel}</p>
               </div>
             </div>
           </div>
