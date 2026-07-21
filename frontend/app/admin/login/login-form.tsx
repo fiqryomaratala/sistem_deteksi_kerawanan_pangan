@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { queueAdminWelcomeToast, saveAdminSession } from "../admin-session";
+import { buildApiUrl } from "../../lib/api-config";
 
 type FormState = {
   username: string;
@@ -23,11 +24,6 @@ type LoginResponse = {
 type LoginErrorResponse = {
   message?: string;
 };
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  process.env.NEXT_PUBLIC_BACKEND_URL ??
-  "http://127.0.0.1:8000";
 
 function MailIcon() {
   return (
@@ -99,7 +95,7 @@ export function LoginForm() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/auth/login`, {
+      const response = await fetch(buildApiUrl("/admin/auth/login"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

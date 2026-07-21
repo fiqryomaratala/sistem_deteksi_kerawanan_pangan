@@ -1,9 +1,7 @@
+import { buildApiUrl } from "../lib/api-config";
+
 const ADMIN_SESSION_EVENT = "admin-session-change";
 const ADMIN_WELCOME_TOAST_EVENT = "admin-welcome-toast";
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  process.env.NEXT_PUBLIC_BACKEND_URL ??
-  "http://127.0.0.1:8000";
 
 export type AdminProfile = {
   username: string;
@@ -26,7 +24,7 @@ export function resolveAdminPhotoUrl(photoUrl: string | null | undefined) {
     return photoUrl;
   }
 
-  return `${API_BASE_URL}${photoUrl}`;
+  return buildApiUrl(photoUrl);
 }
 
 export function getAdminAccessToken() {

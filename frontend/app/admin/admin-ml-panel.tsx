@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { FormEvent, startTransition, useState, useSyncExternalStore } from "react";
 import { getAdminAccessToken, subscribeAdminSession } from "./admin-session";
+import { buildApiUrl } from "../lib/api-config";
 
 type PredictionLabel = "Aman" | "Waspada" | "Rawan";
 
@@ -55,11 +56,6 @@ type PredictionFormState = {
   daging_ayam_tersedia: string;
   daging_ayam_kebutuhan: string;
 };
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  process.env.NEXT_PUBLIC_BACKEND_URL ??
-  "http://127.0.0.1:8000";
 
 const MONTH_LABELS = [
   "Jan",
@@ -170,7 +166,7 @@ export function AdminMlPanel() {
     setPredictionSubmitting(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/predict`, {
+      const response = await fetch(buildApiUrl("/admin/predict"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -227,7 +223,7 @@ export function AdminMlPanel() {
     setImportSubmitting(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/predictions/import`, {
+      const response = await fetch(buildApiUrl("/admin/predictions/import"), {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

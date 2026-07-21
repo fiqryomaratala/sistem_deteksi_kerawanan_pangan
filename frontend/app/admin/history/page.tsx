@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AdminShell } from "../admin-shell";
+import { buildApiUrl } from "../../lib/api-config";
 
 export const dynamic = "force-dynamic";
 
@@ -44,11 +45,6 @@ type HistorySearchParams = {
   bulan?: string;
   tahun?: string;
 };
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  process.env.API_URL ??
-  "http://127.0.0.1:8000";
 
 const PAGE_SIZE = 12;
 
@@ -104,7 +100,7 @@ function parseStatus(value: string | undefined): PredictionLabel | null {
 }
 
 async function getJson<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, { cache: "no-store" });
+  const response = await fetch(buildApiUrl(path), { cache: "no-store" });
 
   if (!response.ok) {
     throw new Error(`Request ${path} gagal dengan status ${response.status}`);

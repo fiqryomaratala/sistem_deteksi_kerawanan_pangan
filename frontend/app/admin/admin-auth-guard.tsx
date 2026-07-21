@@ -9,11 +9,7 @@ import {
   isAdminSessionExpired,
   subscribeAdminSession,
 } from "./admin-session";
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  process.env.NEXT_PUBLIC_BACKEND_URL ??
-  "http://127.0.0.1:8000";
+import { buildApiUrl } from "../lib/api-config";
 
 type SessionState = {
   token: string | null;
@@ -108,7 +104,7 @@ export function AdminAuthGuard() {
       setIsChecking(true);
 
       try {
-        const response = await fetch(`${API_BASE_URL}/admin/auth/me`, {
+        const response = await fetch(buildApiUrl("/admin/auth/me"), {
           method: "GET",
           headers: {
             Authorization: `Bearer ${session.token}`,

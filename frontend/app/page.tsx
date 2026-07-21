@@ -1,3 +1,5 @@
+import { buildApiUrl } from "./lib/api-config";
+
 export const dynamic = "force-dynamic";
 
 type PredictionLabel = "Aman" | "Waspada" | "Rawan";
@@ -104,13 +106,8 @@ const STATUS_STYLES: Record<
   },
 };
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  process.env.API_URL ??
-  "http://127.0.0.1:8000";
-
 async function getJson<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, { cache: "no-store" });
+  const response = await fetch(buildApiUrl(path), { cache: "no-store" });
 
   if (!response.ok) {
     throw new Error(`Request ${path} gagal dengan status ${response.status}`);

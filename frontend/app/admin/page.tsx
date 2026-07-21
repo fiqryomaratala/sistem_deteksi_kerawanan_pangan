@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { AdminShell } from "./admin-shell";
+import { buildApiUrl } from "../lib/api-config";
 
 export const dynamic = "force-dynamic";
 
@@ -78,11 +79,6 @@ type AdminDashboardData = {
   error: string | null;
 };
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  process.env.API_URL ??
-  "http://127.0.0.1:8000";
-
 const MONTH_LABELS = [
   "Jan",
   "Feb",
@@ -123,7 +119,7 @@ const STATUS_THEME: Record<
 };
 
 async function getJson<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, { cache: "no-store" });
+  const response = await fetch(buildApiUrl(path), { cache: "no-store" });
 
   if (!response.ok) {
     throw new Error(`Request ${path} gagal dengan status ${response.status}`);
@@ -418,265 +414,265 @@ export default async function AdminPage() {
       </section>
 
       <section className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_360px]">
-              <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
-                <div className="border-b border-slate-200 px-6 py-4">
-                  <h2 className="text-lg font-semibold text-slate-900">
-                    Aktivitas Bulanan
-                  </h2>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Jumlah prediksi per bulan dengan warna mengikuti status dominan.
-                  </p>
-                </div>
+        <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
+          <div className="border-b border-slate-200 px-6 py-4">
+            <h2 className="text-lg font-semibold text-slate-900">
+              Aktivitas Bulanan
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Jumlah prediksi per bulan dengan warna mengikuti status dominan.
+            </p>
+          </div>
 
-                <div className="p-6">
-                  <div className="grid h-72 grid-cols-12 items-end gap-3">
-                    {trend.items.map((item) => {
-                      const dominant = getDominantStatus(item);
-                      const barTheme = dominant
-                        ? STATUS_THEME[dominant].bar
-                        : "bg-slate-300";
-                      const height =
-                        item.total === 0
-                          ? 12
-                          : Math.max((item.total / maxTrendValue) * 100, 14);
+          <div className="p-6">
+            <div className="grid h-72 grid-cols-12 items-end gap-3">
+              {trend.items.map((item) => {
+                const dominant = getDominantStatus(item);
+                const barTheme = dominant
+                  ? STATUS_THEME[dominant].bar
+                  : "bg-slate-300";
+                const height =
+                  item.total === 0
+                    ? 12
+                    : Math.max((item.total / maxTrendValue) * 100, 14);
 
-                      return (
-                        <div
-                          key={item.bulan}
-                          className="flex h-full flex-col items-center justify-end gap-3"
-                        >
-                          <div className="flex h-full w-full items-end justify-center">
-                            <div
-                              className={`w-full max-w-10 rounded-t-[4px] ${barTheme}`}
-                              style={{ height: `${height}%` }}
-                            />
-                          </div>
-                          <div className="text-center">
-                            <p className="text-sm font-semibold text-slate-700">
-                              {MONTH_LABELS[item.bulan - 1]}
-                            </p>
-                            <p className="text-xs text-slate-400">{item.total}</p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    {distribution.items.map((item) => (
+                return (
+                  <div
+                    key={item.bulan}
+                    className="flex h-full flex-col items-center justify-end gap-3"
+                  >
+                    <div className="flex h-full w-full items-end justify-center">
                       <div
-                        key={item.label}
-                        className={`inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm ${STATUS_THEME[item.label].chip}`}
-                      >
-                        <span className={`h-2.5 w-2.5 rounded-full ${STATUS_THEME[item.label].bar}`} />
-                        <span>{item.label}</span>
-                      </div>
-                    ))}
+                        className={`w-full max-w-10 rounded-t-[4px] ${barTheme}`}
+                        style={{ height: `${height}%` }}
+                      />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm font-semibold text-slate-700">
+                        {MONTH_LABELS[item.bulan - 1]}
+                      </p>
+                      <p className="text-xs text-slate-400">{item.total}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              {distribution.items.map((item) => (
+                <div
+                  key={item.label}
+                  className={`inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm ${STATUS_THEME[item.label].chip}`}
+                >
+                  <span className={`h-2.5 w-2.5 rounded-full ${STATUS_THEME[item.label].bar}`} />
+                  <span>{item.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </article>
+
+        <div className="grid gap-6">
+          <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
+            <div className="border-b border-slate-200 px-6 py-4">
+              <h2 className="text-lg font-semibold text-slate-900">
+                Distribusi Status
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Komposisi hasil prediksi yang tersimpan.
+              </p>
+            </div>
+
+            <div className="space-y-4 p-6">
+              {distribution.items.map((item) => (
+                <div key={item.label}>
+                  <div className="mb-2 flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className={`h-2.5 w-2.5 rounded-full ${STATUS_THEME[item.label].bar}`} />
+                      <span className="font-medium text-slate-700">{item.label}</span>
+                    </div>
+                    <span className="text-slate-500">
+                      {formatNumber(item.value)} ({formatPercentage(item.percentage)})
+                    </span>
+                  </div>
+                  <div className="h-2.5 rounded-full bg-slate-100">
+                    <div
+                      className={`h-2.5 rounded-full ${STATUS_THEME[item.label].bar}`}
+                      style={{ width: `${item.percentage}%` }}
+                    />
                   </div>
                 </div>
-              </article>
+              ))}
+            </div>
+          </article>
 
-              <div className="grid gap-6">
-                <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
-                  <div className="border-b border-slate-200 px-6 py-4">
-                    <h2 className="text-lg font-semibold text-slate-900">
-                      Distribusi Status
-                    </h2>
-                    <p className="mt-1 text-sm text-slate-500">
-                      Komposisi hasil prediksi yang tersimpan.
-                    </p>
+          <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
+            <div className="border-b border-slate-200 px-6 py-4">
+              <h2 className="text-lg font-semibold text-slate-900">
+                Prediksi Terbaru
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Detail hasil prediksi paling baru.
+              </p>
+            </div>
+
+            <div className="p-6">
+              {latestPrediction ? (
+                <div className="space-y-4">
+                  <div className="flex items-start justify-between gap-4 rounded-sm bg-[#f8f9fc] p-4">
+                    <div>
+                      <p className="text-sm text-slate-500">Periode</p>
+                      <p className="mt-1 text-lg font-semibold text-slate-900">
+                        {formatMonthYear(latestPrediction.bulan, latestPrediction.tahun)}
+                      </p>
+                    </div>
+                    <span
+                      className={`rounded-full px-3 py-2 text-xs font-semibold ring-1 ${STATUS_THEME[latestPrediction.hasil_prediksi].badge}`}
+                    >
+                      {latestPrediction.hasil_prediksi}
+                    </span>
                   </div>
 
-                  <div className="space-y-4 p-6">
-                    {distribution.items.map((item) => (
-                      <div key={item.label}>
-                        <div className="mb-2 flex items-center justify-between text-sm">
-                          <div className="flex items-center gap-2">
-                            <span className={`h-2.5 w-2.5 rounded-full ${STATUS_THEME[item.label].bar}`} />
-                            <span className="font-medium text-slate-700">{item.label}</span>
-                          </div>
-                          <span className="text-slate-500">
-                            {formatNumber(item.value)} ({formatPercentage(item.percentage)})
-                          </span>
-                        </div>
-                        <div className="h-2.5 rounded-full bg-slate-100">
-                          <div
-                            className={`h-2.5 rounded-full ${STATUS_THEME[item.label].bar}`}
-                            style={{ width: `${item.percentage}%` }}
-                          />
-                        </div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {latestCommodityRatios.map((item) => (
+                      <div key={item.label} className="rounded-sm bg-[#f8f9fc] px-4 py-3">
+                        <p className="text-sm text-slate-500">{item.label}</p>
+                        <p className="mt-1 text-2xl font-semibold text-slate-900">
+                          {item.value.toFixed(2)}
+                        </p>
                       </div>
                     ))}
                   </div>
-                </article>
 
-                <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
-                  <div className="border-b border-slate-200 px-6 py-4">
-                    <h2 className="text-lg font-semibold text-slate-900">
-                      Prediksi Terbaru
-                    </h2>
-                    <p className="mt-1 text-sm text-slate-500">
-                      Detail hasil prediksi paling baru.
+                  <div className="rounded-sm border border-slate-200 px-4 py-4">
+                    <p className="text-sm text-slate-500">Catatan</p>
+                    <p className="mt-2 text-sm leading-7 text-slate-600">
+                      {latestPrediction.catatan ?? "Belum ada catatan untuk data ini."}
                     </p>
                   </div>
-
-                  <div className="p-6">
-                    {latestPrediction ? (
-                      <div className="space-y-4">
-                        <div className="flex items-start justify-between gap-4 rounded-sm bg-[#f8f9fc] p-4">
-                          <div>
-                            <p className="text-sm text-slate-500">Periode</p>
-                            <p className="mt-1 text-lg font-semibold text-slate-900">
-                              {formatMonthYear(latestPrediction.bulan, latestPrediction.tahun)}
-                            </p>
-                          </div>
-                          <span
-                            className={`rounded-full px-3 py-2 text-xs font-semibold ring-1 ${STATUS_THEME[latestPrediction.hasil_prediksi].badge}`}
-                          >
-                            {latestPrediction.hasil_prediksi}
-                          </span>
-                        </div>
-
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          {latestCommodityRatios.map((item) => (
-                            <div key={item.label} className="rounded-sm bg-[#f8f9fc] px-4 py-3">
-                              <p className="text-sm text-slate-500">{item.label}</p>
-                              <p className="mt-1 text-2xl font-semibold text-slate-900">
-                                {item.value.toFixed(2)}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="rounded-sm border border-slate-200 px-4 py-4">
-                          <p className="text-sm text-slate-500">Catatan</p>
-                          <p className="mt-2 text-sm leading-7 text-slate-600">
-                            {latestPrediction.catatan ?? "Belum ada catatan untuk data ini."}
-                          </p>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="rounded-sm bg-[#f8f9fc] px-4 py-5 text-sm text-slate-500">
-                        Belum ada hasil prediksi yang tersimpan.
-                      </div>
-                    )}
-                  </div>
-                </article>
-              </div>
-            </section>
+                </div>
+              ) : (
+                <div className="rounded-sm bg-[#f8f9fc] px-4 py-5 text-sm text-slate-500">
+                  Belum ada hasil prediksi yang tersimpan.
+                </div>
+              )}
+            </div>
+          </article>
+        </div>
+      </section>
 
       <section className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_420px]">
-              <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
-                <div className="border-b border-slate-200 px-6 py-4">
-                  <h2 className="text-lg font-semibold text-slate-900">
-                    Prediksi Terbaru
-                  </h2>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Histori prediksi terbaru untuk peninjauan cepat.
-                  </p>
-                </div>
+        <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
+          <div className="border-b border-slate-200 px-6 py-4">
+            <h2 className="text-lg font-semibold text-slate-900">
+              Prediksi Terbaru
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Histori prediksi terbaru untuk peninjauan cepat.
+            </p>
+          </div>
 
-                <div className="overflow-x-auto p-3">
-                  <table className="min-w-full text-sm">
-                    <thead className="text-left text-xs uppercase tracking-[0.14em] text-slate-400">
-                      <tr>
-                        <th className="px-3 py-3">Periode</th>
-                        <th className="px-3 py-3">Status</th>
-                        <th className="px-3 py-3">Rasio</th>
-                        <th className="px-3 py-3">Input</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {history.items.length > 0 ? (
-                        history.items.map((item) => (
-                          <tr key={item.id} className="border-t border-slate-100">
-                            <td className="px-3 py-4">
-                              <p className="font-semibold text-slate-900">
-                                {formatMonthYear(item.bulan, item.tahun)}
-                              </p>
-                              <p className="mt-1 text-xs text-slate-400">
-                                ID #{item.id}
-                              </p>
-                            </td>
-                            <td className="px-3 py-4">
-                              <span
-                                className={`rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ${STATUS_THEME[item.hasil_prediksi].badge}`}
-                              >
-                                {item.hasil_prediksi}
-                              </span>
-                            </td>
-                            <td className="px-3 py-4 text-slate-500">
-                              <p>Beras {item.beras_ratio.toFixed(2)}</p>
-                              <p>Minyak {item.minyak_ratio.toFixed(2)}</p>
-                              <p>Telur {item.telur_ratio.toFixed(2)}</p>
-                            </td>
-                            <td className="px-3 py-4 text-slate-500">
-                              {formatDateTime(item.created_at)}
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td
-                            colSpan={4}
-                            className="px-3 py-8 text-center text-slate-500"
-                          >
-                            Belum ada histori prediksi.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </article>
-
-              <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
-                <div className="border-b border-slate-200 px-6 py-4">
-                  <h2 className="text-lg font-semibold text-slate-900">
-                    Umpan Aktivitas
-                  </h2>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Ringkasan cepat dari entri yang baru masuk.
-                  </p>
-                </div>
-
-                <div className="space-y-4 p-6">
-                  {history.items.length > 0 ? (
-                    history.items.slice(0, 4).map((item) => (
-                      <div key={`feed-${item.id}`} className="flex gap-4">
-                        <div
-                          className={`grid h-11 w-11 shrink-0 place-items-center rounded-full text-sm font-semibold ${STATUS_THEME[item.hasil_prediksi].icon}`}
+          <div className="overflow-x-auto p-3">
+            <table className="min-w-full text-sm">
+              <thead className="text-left text-xs uppercase tracking-[0.14em] text-slate-400">
+                <tr>
+                  <th className="px-3 py-3">Periode</th>
+                  <th className="px-3 py-3">Status</th>
+                  <th className="px-3 py-3">Rasio</th>
+                  <th className="px-3 py-3">Input</th>
+                </tr>
+              </thead>
+              <tbody>
+                {history.items.length > 0 ? (
+                  history.items.map((item) => (
+                    <tr key={item.id} className="border-t border-slate-100">
+                      <td className="px-3 py-4">
+                        <p className="font-semibold text-slate-900">
+                          {formatMonthYear(item.bulan, item.tahun)}
+                        </p>
+                        <p className="mt-1 text-xs text-slate-400">
+                          ID #{item.id}
+                        </p>
+                      </td>
+                      <td className="px-3 py-4">
+                        <span
+                          className={`rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ${STATUS_THEME[item.hasil_prediksi].badge}`}
                         >
-                          {item.hasil_prediksi.charAt(0)}
-                        </div>
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <p className="font-semibold text-slate-900">
-                              {formatMonthYear(item.bulan, item.tahun)}
-                            </p>
-                            <span
-                              className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_THEME[item.hasil_prediksi].chip}`}
-                            >
-                              {item.hasil_prediksi}
-                            </span>
-                          </div>
-                          <p className="mt-1 text-sm leading-6 text-slate-500">
-                            {getStatusSummary(item)}. {item.catatan ?? "Tanpa catatan tambahan."}
-                          </p>
-                          <p className="mt-1 text-xs text-slate-400">
-                            {formatDateTime(item.created_at)}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="rounded-sm bg-[#f8f9fc] px-4 py-5 text-sm text-slate-500">
-                      Umpan aktivitas akan muncul setelah data prediksi mulai masuk.
+                          {item.hasil_prediksi}
+                        </span>
+                      </td>
+                      <td className="px-3 py-4 text-slate-500">
+                        <p>Beras {item.beras_ratio.toFixed(2)}</p>
+                        <p>Minyak {item.minyak_ratio.toFixed(2)}</p>
+                        <p>Telur {item.telur_ratio.toFixed(2)}</p>
+                      </td>
+                      <td className="px-3 py-4 text-slate-500">
+                        {formatDateTime(item.created_at)}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="px-3 py-8 text-center text-slate-500"
+                    >
+                      Belum ada histori prediksi.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
+          <div className="border-b border-slate-200 px-6 py-4">
+            <h2 className="text-lg font-semibold text-slate-900">
+              Umpan Aktivitas
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Ringkasan cepat dari entri yang baru masuk.
+            </p>
+          </div>
+
+          <div className="space-y-4 p-6">
+            {history.items.length > 0 ? (
+              history.items.slice(0, 4).map((item) => (
+                <div key={`feed-${item.id}`} className="flex gap-4">
+                  <div
+                    className={`grid h-11 w-11 shrink-0 place-items-center rounded-full text-sm font-semibold ${STATUS_THEME[item.hasil_prediksi].icon}`}
+                  >
+                    {item.hasil_prediksi.charAt(0)}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-semibold text-slate-900">
+                        {formatMonthYear(item.bulan, item.tahun)}
+                      </p>
+                      <span
+                        className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_THEME[item.hasil_prediksi].chip}`}
+                      >
+                        {item.hasil_prediksi}
+                      </span>
                     </div>
-                  )}
+                    <p className="mt-1 text-sm leading-6 text-slate-500">
+                      {getStatusSummary(item)}. {item.catatan ?? "Tanpa catatan tambahan."}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-400">
+                      {formatDateTime(item.created_at)}
+                    </p>
+                  </div>
                 </div>
-              </article>
-            </section>
+              ))
+            ) : (
+              <div className="rounded-sm bg-[#f8f9fc] px-4 py-5 text-sm text-slate-500">
+                Umpan aktivitas akan muncul setelah data prediksi mulai masuk.
+              </div>
+            )}
+          </div>
+        </article>
+      </section>
     </AdminShell>
   );
 }

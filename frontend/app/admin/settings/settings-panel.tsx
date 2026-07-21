@@ -9,6 +9,7 @@ import {
   resolveAdminPhotoUrl,
   updateAdminProfile,
 } from "../admin-session";
+import { buildApiUrl } from "../../lib/api-config";
 
 type SettingsPanelProps = {
   initialProfile: {
@@ -32,11 +33,6 @@ type ApiSuccessResponse = {
 type ApiErrorResponse = {
   message?: string;
 };
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  process.env.NEXT_PUBLIC_BACKEND_URL ??
-  "http://127.0.0.1:8000";
 
 function CameraIcon() {
   return (
@@ -163,7 +159,7 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
     setIsUpdatingDisplayName(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/profile/display-name`, {
+      const response = await fetch(buildApiUrl("/admin/profile/display-name"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -214,7 +210,7 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
       const formData = new FormData();
       formData.append("file", selectedFile);
 
-      const response = await fetch(`${API_BASE_URL}/admin/profile/photo`, {
+      const response = await fetch(buildApiUrl("/admin/profile/photo"), {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -276,7 +272,7 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
     setIsChangingPassword(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/auth/reset-password`, {
+      const response = await fetch(buildApiUrl("/admin/auth/reset-password"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -316,74 +312,51 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
       setIsChangingPassword(false);
     }
   }
+
   const displayName = profile.display_name || profile.username;
 
   return (
-    <section className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
-      <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
-        <div className="border-b border-slate-200 px-6 py-4">
-          <h2 className="text-lg font-semibold text-slate-900">Profil Admin</h2>
-          <p className="mt-1 text-sm text-slate-500">
-            Foto profil dan identitas singkat akun yang sedang aktif.
-          </p>
-        </div>
-
-        <div className="space-y-5 p-6">
-          <div className="flex flex-col items-center rounded-sm bg-[#f8f9fc] px-5 py-6 text-center">
-            <AdminProfileAvatar
-              photoUrl={photoPreviewUrl}
-              name={displayName}
-              sizeClassName="h-28 w-28"
-              className="ring-4 ring-white"
-              iconClassName="h-10 w-10"
-            />
-            <p className="mt-4 text-lg font-semibold text-slate-900">{displayName}</p>
-            <p className="text-sm lowercase text-slate-500">{profile.role}</p>
-          </div>
-
-          <div className="rounded-sm border border-dashed border-slate-200 px-4 py-4 text-sm leading-6 text-slate-500">
-            Gunakan foto profil yang jelas agar akun admin mudah dikenali. Sistem saat
-            ini menerima file JPG, PNG, atau WEBP dengan ukuran maksimal 2 MB.
+    <section className="space-y-6">
+      <article className="rounded-sm bg-white p-6 shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
+        <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+          <AdminProfileAvatar
+            name={displayName}
+            photoUrl={photoPreviewUrl}
+            sizeClassName="h-20 w-20 text-xl"
+          />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563eb]">
+              {profile.role}
+            </p>
+            <h1 className="mt-1 text-2xl font-bold text-slate-900">{displayName}</h1>
+            <p className="mt-1 text-sm text-slate-500">@{profile.username}</p>
           </div>
         </div>
       </article>
 
-      <div className="grid gap-6">
+      <div className="grid gap-6 lg:grid-cols-2">
         <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
           <div className="border-b border-slate-200 px-6 py-4">
-            <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-sm bg-blue-100 text-blue-700">
-                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-current">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-lg font-semibold text-slate-900">Ubah Nama Tampilan</h2>
-                <p className="mt-1 text-sm text-slate-500">
-                  Atur nama yang ditampilkan di sidebar dashboard.
-                </p>
-              </div>
-            </div>
+            <h2 className="text-lg font-semibold text-slate-900">Nama Tampilan</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Ubah nama yang ditampilkan pada header dan komponen admin.
+            </p>
           </div>
 
           <form className="space-y-4 p-6" onSubmit={handleDisplayNameSubmit}>
             <label className="block space-y-2 text-sm text-slate-600">
-              <span>Nama tampilan</span>
+              <span>Nama Tampilan</span>
               <input
                 type="text"
                 value={displayNameForm}
-                onChange={(e) => setDisplayNameForm(e.target.value)}
-                placeholder="Masukkan nama tampilan"
+                onChange={(event) => setDisplayNameForm(event.target.value)}
+                placeholder="Contoh: Admin Ketahanan Pangan"
                 className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none transition focus:border-[#2563eb]"
               />
             </label>
 
-            <div className="rounded-sm border border-dashed border-slate-200 px-4 py-4 text-sm leading-6 text-slate-500">
-              Nama tampilan akan muncul di sidebar dashboard menggantikan email. Username login tetap menggunakan email.
-            </div>
-
             {displayNameError ? (
-              <div className="rounded-sm border border-rose-200 bg-rose-50 px-4 py-3 text-[13px] text-rose-700">
+              <div className="rounded-sm border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
                 {displayNameError}
               </div>
             ) : null}
@@ -407,13 +380,13 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
         <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
           <div className="border-b border-slate-200 px-6 py-4">
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-sm bg-sky-100 text-sky-700">
+              <div className="grid h-10 w-10 place-items-center rounded-sm bg-blue-50 text-[#2563eb]">
                 <CameraIcon />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">Unggah Foto Profil</h2>
+                <h2 className="text-lg font-semibold text-slate-900">Foto Profil</h2>
                 <p className="mt-1 text-sm text-slate-500">
-                  Perbarui foto admin yang tampil di halaman pengaturan.
+                  Unggah foto profil dalam format JPG, PNG, atau WEBP (max 2 MB).
                 </p>
               </div>
             </div>
@@ -421,17 +394,17 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
 
           <form className="space-y-4 p-6" onSubmit={handlePhotoSubmit}>
             <label className="block space-y-2 text-sm text-slate-600">
-              <span>Pilih foto</span>
+              <span>Pilih foto baru</span>
               <input
                 type="file"
-                accept=".jpg,.jpeg,.png,.webp"
+                accept="image/jpeg,image/png,image/webp"
                 onChange={handlePhotoChange}
-                className="block w-full rounded-sm border border-slate-200 px-3 py-2.5 text-[13px] text-slate-600 file:mr-4 file:rounded-sm file:border-0 file:bg-[#2563eb] file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white"
+                className="w-full rounded-sm border border-slate-200 px-3 py-2 text-sm text-slate-600 file:mr-3 file:rounded-sm file:border-0 file:bg-slate-100 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-slate-700 hover:file:bg-slate-200"
               />
             </label>
 
             {photoError ? (
-              <div className="rounded-sm border border-rose-200 bg-rose-50 px-4 py-3 text-[13px] text-rose-700">
+              <div className="rounded-sm border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
                 {photoError}
               </div>
             ) : null}
