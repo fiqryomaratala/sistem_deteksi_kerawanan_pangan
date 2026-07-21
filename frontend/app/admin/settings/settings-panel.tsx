@@ -320,7 +320,7 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
 
   return (
     <section className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
-      <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+      <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
         <div className="border-b border-slate-200 px-6 py-4">
           <h2 className="text-lg font-semibold text-slate-900">Profil Admin</h2>
           <p className="mt-1 text-sm text-slate-500">
@@ -349,10 +349,10 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
       </article>
 
       <div className="grid gap-6">
-        <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+        <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
           <div className="border-b border-slate-200 px-6 py-4">
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-sm bg-indigo-100 text-indigo-700">
+              <div className="grid h-10 w-10 place-items-center rounded-sm bg-blue-100 text-blue-700">
                 <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-current">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
                 </svg>
@@ -374,7 +374,7 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
                 value={displayNameForm}
                 onChange={(e) => setDisplayNameForm(e.target.value)}
                 placeholder="Masukkan nama tampilan"
-                className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none transition focus:border-[#6777ef]"
+                className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none transition focus:border-[#2563eb]"
               />
             </label>
 
@@ -397,14 +397,14 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
             <button
               type="submit"
               disabled={isUpdatingDisplayName}
-              className="inline-flex items-center justify-center rounded-sm bg-[#6777ef] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex items-center justify-center rounded-sm bg-[#2563eb] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isUpdatingDisplayName ? "Menyimpan..." : "Simpan Nama"}
             </button>
           </form>
         </article>
 
-        <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+        <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
           <div className="border-b border-slate-200 px-6 py-4">
             <div className="flex items-center gap-3">
               <div className="grid h-10 w-10 place-items-center rounded-sm bg-sky-100 text-sky-700">
@@ -426,7 +426,7 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
                 type="file"
                 accept=".jpg,.jpeg,.png,.webp"
                 onChange={handlePhotoChange}
-                className="block w-full rounded-sm border border-slate-200 px-3 py-2.5 text-[13px] text-slate-600 file:mr-4 file:rounded-sm file:border-0 file:bg-[#6777ef] file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white"
+                className="block w-full rounded-sm border border-slate-200 px-3 py-2.5 text-[13px] text-slate-600 file:mr-4 file:rounded-sm file:border-0 file:bg-[#2563eb] file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white"
               />
             </label>
 
@@ -445,14 +445,14 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
             <button
               type="submit"
               disabled={isUploadingPhoto}
-              className="inline-flex items-center justify-center rounded-sm bg-[#6777ef] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex items-center justify-center rounded-sm bg-[#2563eb] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isUploadingPhoto ? "Mengunggah..." : "Simpan Foto"}
             </button>
           </form>
         </article>
 
-        <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+        <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
           <div className="border-b border-slate-200 px-6 py-4">
             <div className="flex items-center gap-3">
               <div className="grid h-10 w-10 place-items-center rounded-sm bg-amber-100 text-amber-700">
@@ -480,7 +480,7 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
                     currentPassword: event.target.value,
                   }))
                 }
-                className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none transition focus:border-[#6777ef]"
+                className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none transition focus:border-[#2563eb]"
               />
             </label>
 
@@ -496,7 +496,7 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
                     newPassword: event.target.value,
                   }))
                 }
-                className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none transition focus:border-[#6777ef]"
+                className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none transition focus:border-[#2563eb]"
               />
             </label>
 
@@ -512,7 +512,7 @@ export function SettingsPanel({ initialProfile }: SettingsPanelProps) {
                     confirmPassword: event.target.value,
                   }))
                 }
-                className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none transition focus:border-[#6777ef]"
+                className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none transition focus:border-[#2563eb]"
               />
             </label>
 

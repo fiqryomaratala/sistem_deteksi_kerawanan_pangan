@@ -269,7 +269,7 @@ export default async function AdminHistoryPage({
       ) : null}
 
       <section className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+        <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
           <div className="border-b border-slate-200 px-6 py-4">
             <h2 className="text-lg font-semibold text-slate-900">Filter Riwayat</h2>
             <p className="mt-1 text-sm text-slate-500">
@@ -283,7 +283,7 @@ export default async function AdminHistoryPage({
               <select
                 name="status"
                 defaultValue={status ?? ""}
-                className="w-full rounded-sm border border-slate-200 bg-white px-3 py-2.5 outline-none transition focus:border-[#6777ef]"
+                className="w-full rounded-sm border border-slate-200 bg-white px-3 py-2.5 outline-none transition focus:border-[#2563eb]"
               >
                 <option value="">Semua status</option>
                 <option value="Aman">Aman</option>
@@ -297,7 +297,7 @@ export default async function AdminHistoryPage({
               <select
                 name="bulan"
                 defaultValue={bulan ? String(bulan) : ""}
-                className="w-full rounded-sm border border-slate-200 bg-white px-3 py-2.5 outline-none transition focus:border-[#6777ef]"
+                className="w-full rounded-sm border border-slate-200 bg-white px-3 py-2.5 outline-none transition focus:border-[#2563eb]"
               >
                 <option value="">Semua bulan</option>
                 {MONTH_LABELS.map((label, index) => (
@@ -316,14 +316,14 @@ export default async function AdminHistoryPage({
                 min={1900}
                 defaultValue={tahun ?? ""}
                 placeholder="Contoh 2026"
-                className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none transition focus:border-[#6777ef]"
+                className="w-full rounded-sm border border-slate-200 px-3 py-2.5 outline-none transition focus:border-[#2563eb]"
               />
             </label>
 
             <div className="flex gap-3">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-sm bg-[#6777ef] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:brightness-105"
+                className="inline-flex items-center justify-center rounded-sm bg-[#2563eb] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:brightness-105"
               >
                 Terapkan
               </button>
@@ -337,7 +337,7 @@ export default async function AdminHistoryPage({
           </form>
         </article>
 
-        <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+        <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
           <div className="border-b border-slate-200 px-6 py-4">
             <h2 className="text-lg font-semibold text-slate-900">Ringkasan Halaman</h2>
             <p className="mt-1 text-sm text-slate-500">
@@ -369,7 +369,7 @@ export default async function AdminHistoryPage({
         </article>
       </section>
 
-      <section className="mt-6 rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+      <section className="mt-6 rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
         <div className="border-b border-slate-200 px-6 py-4">
           <h2 className="text-lg font-semibold text-slate-900">Daftar Riwayat</h2>
           <p className="mt-1 text-sm text-slate-500">

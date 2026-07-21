@@ -332,7 +332,7 @@ function StatCard({
   icon?: ReactNode;
 }) {
   return (
-    <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+    <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
       <div className="flex items-center gap-4 p-6">
         <div className={`grid h-24 w-24 place-items-center rounded-sm`}>
           {icon ? <span className="text-xl font-semibold">{icon}</span> : null}
@@ -418,7 +418,7 @@ export default async function AdminPage() {
       </section>
 
       <section className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_360px]">
-              <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+              <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
                 <div className="border-b border-slate-200 px-6 py-4">
                   <h2 className="text-lg font-semibold text-slate-900">
                     Aktivitas Bulanan
@@ -477,7 +477,7 @@ export default async function AdminPage() {
               </article>
 
               <div className="grid gap-6">
-                <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+                <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
                   <div className="border-b border-slate-200 px-6 py-4">
                     <h2 className="text-lg font-semibold text-slate-900">
                       Distribusi Status
@@ -510,7 +510,7 @@ export default async function AdminPage() {
                   </div>
                 </article>
 
-                <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+                <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
                   <div className="border-b border-slate-200 px-6 py-4">
                     <h2 className="text-lg font-semibold text-slate-900">
                       Prediksi Terbaru
@@ -566,7 +566,7 @@ export default async function AdminPage() {
             </section>
 
       <section className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_420px]">
-              <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+              <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
                 <div className="border-b border-slate-200 px-6 py-4">
                   <h2 className="text-lg font-semibold text-slate-900">
                     Prediksi Terbaru
@@ -630,7 +630,7 @@ export default async function AdminPage() {
                 </div>
               </article>
 
-              <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(103,119,239,0.08)] ring-1 ring-slate-200/70">
+              <article className="rounded-sm bg-white shadow-[0_4px_20px_rgba(37,99,235,0.08)] ring-1 ring-slate-200/70">
                 <div className="border-b border-slate-200 px-6 py-4">
                   <h2 className="text-lg font-semibold text-slate-900">
                     Umpan Aktivitas

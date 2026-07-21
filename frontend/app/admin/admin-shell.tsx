@@ -16,26 +16,111 @@ type AdminShellProps = {
   children: ReactNode;
 };
 
+// Icons for Sidebar Navigation
+function HomeIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="14" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+    </svg>
+  );
+}
+
+function MlIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+      <circle cx="12" cy="12" r="4" />
+    </svg>
+  );
+}
+
+function HistoryIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 8v4l3 3" />
+      <path d="M3.05 11a9 9 0 1 1 .5 4m-.5-4v-4m0 4h4" />
+    </svg>
+  );
+}
+
+function SettingsIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
 function NavItem({
   href,
   label,
+  icon,
   active,
 }: {
   href: string;
   label: string;
+  icon: ReactNode;
   active: boolean;
 }) {
   return (
     <Link
       href={href}
-      className={`flex items-center gap-3 rounded-sm px-4 py-3 text-sm font-medium transition ${
+      className={`group flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all duration-150 ${
         active
-          ? "bg-[#6777ef] text-white"
+          ? "bg-[#2563eb] text-white shadow-sm"
           : "text-slate-600 hover:bg-[#f8f9fc] hover:text-slate-900"
       }`}
     >
-      <span className={`h-2 w-2 rounded-full ${active ? "bg-white" : "bg-slate-300"}`} />
-      {label}
+      <span
+        className={`shrink-0 transition-colors ${
+          active ? "text-white" : "text-slate-400 group-hover:text-slate-600"
+        }`}
+      >
+        {icon}
+      </span>
+      <span
+        className={`transition-colors ${
+          active ? "text-white font-semibold" : "text-slate-600 group-hover:text-slate-900"
+        }`}
+      >
+        {label}
+      </span>
     </Link>
   );
 }
@@ -83,16 +168,28 @@ export function AdminShell({
               Dashboard
             </p>
             <nav className="mt-4 space-y-1">
-              <NavItem href="/admin" label="Ringkasan" active={activeItem === "overview"} />
-              <NavItem href="/admin/ml" label="Prediksi ML" active={activeItem === "ml"} />
+              <NavItem
+                href="/admin"
+                label="Ringkasan"
+                icon={<HomeIcon />}
+                active={activeItem === "overview"}
+              />
+              <NavItem
+                href="/admin/ml"
+                label="Prediksi ML"
+                icon={<MlIcon />}
+                active={activeItem === "ml"}
+              />
               <NavItem
                 href="/admin/history"
                 label="Riwayat Prediksi"
+                icon={<HistoryIcon />}
                 active={activeItem === "history"}
               />
               <NavItem
                 href="/admin/settings"
                 label="Pengaturan"
+                icon={<SettingsIcon />}
                 active={activeItem === "settings"}
               />
             </nav>

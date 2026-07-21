@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   description: "Halaman login admin untuk mengakses dashboard monitoring internal.",
 };
 
+
 export default async function AdminLoginPage({
   searchParams,
 }: {
