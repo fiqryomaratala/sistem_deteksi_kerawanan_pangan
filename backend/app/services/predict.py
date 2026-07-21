@@ -57,6 +57,8 @@ def predict_and_save(db: Session, data: dict):
         beras_ratio = data["beras_tersedia"] / data["beras_kebutuhan"]
         minyak_ratio = data["minyak_tersedia"] / data["minyak_kebutuhan"]
         telur_ratio = data["telur_tersedia"] / data["telur_kebutuhan"]
+        daging_sapi_ratio = data["daging_sapi_tersedia"] / data["daging_sapi_kebutuhan"]
+        daging_ayam_ratio = data["daging_ayam_tersedia"] / data["daging_ayam_kebutuhan"]
 
         X = pd.DataFrame([{
             "beras_ratio": beras_ratio,
@@ -95,6 +97,8 @@ def predict_and_save(db: Session, data: dict):
             beras_ratio=round(beras_ratio, 3),
             minyak_ratio=round(minyak_ratio, 3),
             telur_ratio=round(telur_ratio, 3),
+            daging_sapi_ratio=round(daging_sapi_ratio, 3),
+            daging_ayam_ratio=round(daging_ayam_ratio, 3),
             hasil_prediksi=hasil_label
         )
 
@@ -119,6 +123,8 @@ def predict_and_save(db: Session, data: dict):
             "beras_ratio": prediction_result.beras_ratio,
             "minyak_ratio": prediction_result.minyak_ratio,
             "telur_ratio": prediction_result.telur_ratio,
+            "daging_sapi_ratio": prediction_result.daging_sapi_ratio,
+            "daging_ayam_ratio": prediction_result.daging_ayam_ratio,
             "hasil_prediksi": prediction_result.hasil_prediksi
         }
 
@@ -144,6 +150,8 @@ def serialize_prediction(prediction):
         "beras_ratio": prediction.beras_ratio,
         "minyak_ratio": prediction.minyak_ratio,
         "telur_ratio": prediction.telur_ratio,
+        "daging_sapi_ratio": prediction.daging_sapi_ratio,
+        "daging_ayam_ratio": prediction.daging_ayam_ratio,
         "hasil_prediksi": prediction.hasil_prediksi,
         "created_at": prediction.created_at
     }

@@ -16,7 +16,10 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column('admin_users', sa.Column('profile_photo_path', sa.String(), nullable=True))
+    op.execute(
+        "ALTER TABLE admin_users "
+        "ADD COLUMN IF NOT EXISTS profile_photo_path VARCHAR"
+    )
 
 
 def downgrade() -> None:

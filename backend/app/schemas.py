@@ -28,6 +28,8 @@ class PredictionResponse(BaseModel):
     beras_ratio: float
     minyak_ratio: float
     telur_ratio: float
+    daging_sapi_ratio: float
+    daging_ayam_ratio: float
     hasil_prediksi: str
 
     class Config:
@@ -53,6 +55,8 @@ class PredictionHistoryItem(BaseModel):
     beras_ratio: float
     minyak_ratio: float
     telur_ratio: float
+    daging_sapi_ratio: float
+    daging_ayam_ratio: float
     hasil_prediksi: str
     created_at: datetime
 

@@ -56,11 +56,17 @@ class BackendTestCase(unittest.TestCase):
                 minyak_kebutuhan=2000,
                 telur_tersedia=28000,
                 telur_kebutuhan=20000,
+                daging_sapi_tersedia=1200,
+                daging_sapi_kebutuhan=1000,
+                daging_ayam_tersedia=1500,
+                daging_ayam_kebutuhan=1000,
             )
             prediction = models.PredictionResult(
                 beras_ratio=1.5,
                 minyak_ratio=1.25,
                 telur_ratio=1.4,
+                daging_sapi_ratio=1.2,
+                daging_ayam_ratio=1.5,
                 hasil_prediksi=label,
             )
             food_data.prediction = prediction
@@ -80,6 +86,10 @@ class BackendTestCase(unittest.TestCase):
             "minyak_kebutuhan": 2000,
             "telur_tersedia": 28000,
             "telur_kebutuhan": 20000,
+            "daging_sapi_tersedia": 1200,
+            "daging_sapi_kebutuhan": 1000,
+            "daging_ayam_tersedia": 1500,
+            "daging_ayam_kebutuhan": 1000,
         }
 
         with self._session() as db:
@@ -90,6 +100,8 @@ class BackendTestCase(unittest.TestCase):
 
         self.assertEqual(result["hasil_prediksi"], "Aman")
         self.assertEqual(result["beras_ratio"], 1.5)
+        self.assertEqual(result["daging_sapi_ratio"], 1.2)
+        self.assertEqual(result["daging_ayam_ratio"], 1.5)
         self.assertEqual(result["catatan"], "Input uji backend")
 
         with self._session() as db:
@@ -105,6 +117,10 @@ class BackendTestCase(unittest.TestCase):
             "minyak_kebutuhan": 2000,
             "telur_tersedia": 28000,
             "telur_kebutuhan": 20000,
+            "daging_sapi_tersedia": 1200,
+            "daging_sapi_kebutuhan": 1000,
+            "daging_ayam_tersedia": 1500,
+            "daging_ayam_kebutuhan": 1000,
         }
 
         with self._session() as db:

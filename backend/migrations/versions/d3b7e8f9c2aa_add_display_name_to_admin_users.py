@@ -12,11 +12,14 @@ import sqlalchemy as sa
 revision = 'd3b7e8f9c2aa'
 down_revision = 'e4c8f9d0b3bb'
 branch_labels = None
-depends_on = None
+depends_on = '5d6a8c7b9e10'
 
 
 def upgrade() -> None:
-    op.add_column('admin_users', sa.Column('display_name', sa.String(), nullable=True))
+    op.execute(
+        "ALTER TABLE admin_users "
+        "ADD COLUMN IF NOT EXISTS display_name VARCHAR"
+    )
 
 
 def downgrade() -> None:

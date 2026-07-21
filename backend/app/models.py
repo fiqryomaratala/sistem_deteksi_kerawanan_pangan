@@ -49,6 +49,8 @@ class PredictionResult(Base):
     beras_ratio = Column(Float, nullable=False)
     minyak_ratio = Column(Float, nullable=False)
     telur_ratio = Column(Float, nullable=False)
+    daging_sapi_ratio = Column(Float, nullable=False)
+    daging_ayam_ratio = Column(Float, nullable=False)
 
     hasil_prediksi = Column(String, nullable=False, index=True)
     created_at = Column(DateTime, default=utc_now)
