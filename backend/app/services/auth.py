@@ -11,13 +11,21 @@ from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
+import tempfile
+
 from app import models
 from app.database import get_db
 from app.logging_config import get_logger
 
 logger = get_logger(__name__)
 bearer_scheme = HTTPBearer(auto_error=False)
-UPLOAD_ROOT = Path(__file__).resolve().parents[2] / "uploads" / "admin-photos"
+
+IS_VERCEL = os.getenv("VERCEL") == "1" or os.getenv("AWS_LAMBDA_FUNCTION_NAME") is not None
+if IS_VERCEL:
+    UPLOAD_ROOT = Path(tempfile.gettempdir()) / "uploads" / "admin-photos"
+else:
+    UPLOAD_ROOT = Path(__file__).resolve().parents[2] / "uploads" / "admin-photos"
+
 MAX_PHOTO_SIZE_BYTES = 2 * 1024 * 1024
 ALLOWED_PHOTO_EXTENSIONS = {
     ".jpg": "image/jpeg",

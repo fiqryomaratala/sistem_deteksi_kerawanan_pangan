@@ -1,4 +1,5 @@
 import os
+import tempfile
 from pathlib import Path
 
 from fastapi import FastAPI, Depends, File, Query, Request, UploadFile
@@ -50,13 +51,24 @@ from app.services.predict import (
 setup_logging()
 logger = get_logger(__name__)
 
-Base.metadata.create_all(bind=engine)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as exc:
+    logger.warning("Gagal membuat tabel database pada startup (mungkin DB belum siap atau offline): %s", exc)
+
+IS_VERCEL = os.getenv("VERCEL") == "1" or os.getenv("AWS_LAMBDA_FUNCTION_NAME") is not None
+root_path = os.getenv("FASTAPI_ROOT_PATH", "/api" if IS_VERCEL else "")
 
 app = FastAPI(
     title="Sistem Deteksi Kerawanan Pangan Kabupaten Indramayu",
-    version="1.0.0"
+    version="1.0.0",
+    root_path=root_path,
 )
-UPLOADS_DIR = Path(__file__).resolve().parents[1] / "uploads"
+
+if IS_VERCEL:
+    UPLOADS_DIR = Path(tempfile.gettempdir()) / "uploads"
+else:
+    UPLOADS_DIR = Path(__file__).resolve().parents[1] / "uploads"
 
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -69,6 +81,7 @@ def get_allowed_origins() -> list[str]:
     return [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
+        "*",
     ]
 
 
