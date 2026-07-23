@@ -88,8 +88,8 @@ class BlackBoxAPITestCase(unittest.TestCase):
 
     def _get_admin_headers(self):
         token, _ = create_admin_token(
-            username=self.admin_user.username,
-            role=self.admin_user.role,
+            username=str(self.admin_user.username),
+            role=str(self.admin_user.role),
             token_secret="test-secret-key-blackbox-12345",
             expire_minutes=60,
         )

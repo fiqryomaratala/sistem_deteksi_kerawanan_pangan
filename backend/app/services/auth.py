@@ -105,7 +105,8 @@ def verify_admin_password(password: str, stored_password_hash: str) -> bool:
 def build_admin_profile(admin_user: models.AdminUser) -> dict:
     photo_url = None
     if admin_user.profile_photo_path:
-        photo_url = f"/uploads/{admin_user.profile_photo_path.replace(os.sep, '/')}"
+        clean_path = Path(str(admin_user.profile_photo_path)).as_posix().lstrip("/")
+        photo_url = f"/uploads/{clean_path}"
 
     return {
         "username": admin_user.username,
@@ -307,13 +308,13 @@ def update_admin_profile_photo(
     output_path = UPLOAD_ROOT / safe_filename
     output_path.write_bytes(file_bytes)
 
-    admin_user.profile_photo_path = str(relative_path)
+    admin_user.profile_photo_path = relative_path.as_posix()
     db.add(admin_user)
     db.commit()
     db.refresh(admin_user)
 
     if previous_file:
-        previous_path = UPLOAD_ROOT.parent / previous_file
+        previous_path = UPLOAD_ROOT.parent / Path(str(previous_file))
         if previous_path.exists():
             previous_path.unlink(missing_ok=True)
 

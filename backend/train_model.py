@@ -11,54 +11,71 @@ from sklearn.metrics import classification_report
 np.random.seed(42)
 
 data = []
-years = [2022, 2023, 2024, 2025]
+years = list(range(2020, 2026))
 months = list(range(1, 13))
 
 for year in years:
     for month in months:
-        beras_tersedia = np.random.randint(20000, 40000)
-        beras_kebutuhan = np.random.randint(18000, 25000)
+        for sample in range(5):
+            if sample % 3 == 0:
+                # Scenario Aman
+                beras_tersedia = np.random.randint(30000, 45000)
+                beras_kebutuhan = np.random.randint(18000, 22000)
+                minyak_tersedia = np.random.randint(3000, 5000)
+                minyak_kebutuhan = np.random.randint(1500, 2500)
+                telur_tersedia = np.random.randint(25000, 35000)
+                telur_kebutuhan = np.random.randint(15000, 20000)
+            elif sample % 3 == 1:
+                # Scenario Waspada
+                beras_tersedia = np.random.randint(18000, 24000)
+                beras_kebutuhan = np.random.randint(20000, 24000)
+                minyak_tersedia = np.random.randint(2000, 3000)
+                minyak_kebutuhan = np.random.randint(2000, 2500)
+                telur_tersedia = np.random.randint(18000, 24000)
+                telur_kebutuhan = np.random.randint(20000, 24000)
+            else:
+                # Scenario Rawan
+                beras_tersedia = np.random.randint(10000, 16000)
+                beras_kebutuhan = np.random.randint(20000, 25000)
+                minyak_tersedia = np.random.randint(800, 1500)
+                minyak_kebutuhan = np.random.randint(2000, 3000)
+                telur_tersedia = np.random.randint(8000, 14000)
+                telur_kebutuhan = np.random.randint(18000, 25000)
 
-        minyak_tersedia = np.random.randint(1000, 5000)
-        minyak_kebutuhan = np.random.randint(1000, 3000)
+            beras_ratio = beras_tersedia / beras_kebutuhan
+            minyak_ratio = minyak_tersedia / minyak_kebutuhan
+            telur_ratio = telur_tersedia / telur_kebutuhan
 
-        telur_tersedia = np.random.randint(15000, 35000)
-        telur_kebutuhan = np.random.randint(15000, 30000)
+            avg_ratio = (beras_ratio + minyak_ratio + telur_ratio) / 3
 
-        beras_ratio = beras_tersedia / beras_kebutuhan
-        minyak_ratio = minyak_tersedia / minyak_kebutuhan
-        telur_ratio = telur_tersedia / telur_kebutuhan
+            if avg_ratio > 1.2:
+                label = "Aman"
+            elif avg_ratio >= 0.8:
+                label = "Waspada"
+            else:
+                label = "Rawan"
 
-        avg_ratio = (beras_ratio + minyak_ratio + telur_ratio) / 3
-
-        if avg_ratio > 1.2:
-            label = "Aman"
-        elif avg_ratio >= 0.8:
-            label = "Waspada"
-        else:
-            label = "Rawan"
-
-        data.append([
-            year, month,
-            beras_tersedia, beras_kebutuhan,
-            minyak_tersedia, minyak_kebutuhan,
-            telur_tersedia, telur_kebutuhan,
-            beras_ratio, minyak_ratio, telur_ratio,
-            label
-        ])
+            data.append([
+                year, month,
+                beras_tersedia, beras_kebutuhan,
+                minyak_tersedia, minyak_kebutuhan,
+                telur_tersedia, telur_kebutuhan,
+                beras_ratio, minyak_ratio, telur_ratio, avg_ratio,
+                label
+            ])
 
 columns = [
     "tahun", "bulan",
     "beras_tersedia", "beras_kebutuhan",
     "minyak_tersedia", "minyak_kebutuhan",
     "telur_tersedia", "telur_kebutuhan",
-    "beras_ratio", "minyak_ratio", "telur_ratio",
+    "beras_ratio", "minyak_ratio", "telur_ratio", "avg_ratio",
     "label"
 ]
 
 df = pd.DataFrame(data, columns=columns)
 
-X = df[["beras_ratio", "minyak_ratio", "telur_ratio"]]
+X = df[["beras_ratio", "minyak_ratio", "telur_ratio", "avg_ratio"]]
 y = df["label"]
 
 label_encoder = LabelEncoder()

@@ -30,12 +30,30 @@ class PredictionServiceError(Exception):
 
 
 def predict_and_save(db: Session, data: dict):
-    if data["beras_kebutuhan"] == 0 or \
-       data["minyak_kebutuhan"] == 0 or \
-       data["telur_kebutuhan"] == 0 or \
-       data["daging_sapi_kebutuhan"] == 0 or \
-       data["daging_ayam_kebutuhan"] == 0:
-        raise PredictionServiceError("Kebutuhan tidak boleh 0")
+    req_keys = [
+        "beras_kebutuhan",
+        "minyak_kebutuhan",
+        "telur_kebutuhan",
+        "daging_sapi_kebutuhan",
+        "daging_ayam_kebutuhan",
+    ]
+    avail_keys = [
+        "beras_tersedia",
+        "minyak_tersedia",
+        "telur_tersedia",
+        "daging_sapi_tersedia",
+        "daging_ayam_tersedia",
+    ]
+
+    for key in req_keys:
+        val = data.get(key)
+        if val is None or val <= 0:
+            raise PredictionServiceError("Kebutuhan harus lebih besar dari 0")
+
+    for key in avail_keys:
+        val = data.get(key)
+        if val is None or val < 0:
+            raise PredictionServiceError("Ketersediaan pangan tidak boleh negatif")
 
     bulan = data.get("bulan")
     tahun = data.get("tahun")
@@ -60,10 +78,13 @@ def predict_and_save(db: Session, data: dict):
         daging_sapi_ratio = data["daging_sapi_tersedia"] / data["daging_sapi_kebutuhan"]
         daging_ayam_ratio = data["daging_ayam_tersedia"] / data["daging_ayam_kebutuhan"]
 
+        avg_ratio = (beras_ratio + minyak_ratio + telur_ratio) / 3
+
         X = pd.DataFrame([{
             "beras_ratio": beras_ratio,
             "minyak_ratio": minyak_ratio,
-            "telur_ratio": telur_ratio
+            "telur_ratio": telur_ratio,
+            "avg_ratio": avg_ratio
         }])
 
         prediction = model.predict(X)[0]

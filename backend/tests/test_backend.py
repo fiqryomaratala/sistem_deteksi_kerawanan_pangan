@@ -1,8 +1,9 @@
+
 import os
 import unittest
 from unittest.mock import patch
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, StaticPool
 from sqlalchemy.orm import sessionmaker
 
 from app import models
@@ -29,11 +30,16 @@ class FakeLabelEncoder:
 
 class BackendTestCase(unittest.TestCase):
     def setUp(self):
-        self.database_url = os.getenv("TEST_DATABASE_URL") or os.getenv("DATABASE_URL")
-        if not self.database_url:
-            self.skipTest("Set TEST_DATABASE_URL atau DATABASE_URL PostgreSQL untuk menjalankan test backend.")
+        self.database_url = os.getenv("TEST_DATABASE_URL")
+        if self.database_url:
+            self.engine = create_engine(self.database_url)
+        else:
+            self.engine = create_engine(
+                "sqlite:///:memory:",
+                connect_args={"check_same_thread": False},
+                poolclass=StaticPool,
+            )
 
-        self.engine = create_engine(self.database_url)
         self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
         models.Base.metadata.create_all(bind=self.engine)
 

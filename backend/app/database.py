@@ -16,6 +16,8 @@ logger = get_logger(__name__)
 
 
 def validate_postgres_url(database_url: str) -> str:
+    if database_url.startswith("postgres://"):
+        database_url = "postgresql+psycopg2://" + database_url[len("postgres://"):]
     parsed = urlparse(database_url)
     allowed_schemes = {"postgresql", "postgresql+psycopg2"}
 

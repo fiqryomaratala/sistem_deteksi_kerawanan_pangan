@@ -1,0 +1,8 @@
+# Pyrefly configuration for backend sub-directory
+
+search_path = [
+    ".",
+    ".venv/Lib/site-packages"
+]
+
+python-interpreter-path = ".venv/Scripts/python.exe"
